@@ -36,5 +36,5 @@ dependencies = [
 
 [project.urls]
 Homepage = "https://github.com/HedgeTech-ir/HedgeTech"
-Documentation = "https://github.com/HedgeTech-ir/hedgetech-core-sdk/blob/main/README.md"
+Documentation = "https://github.com/HedgeTech-ir/HedgeTech/blob/main/README.md"
 Repository = "https://github.com/HedgeTech-ir/HedgeTech"
