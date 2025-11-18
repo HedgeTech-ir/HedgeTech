@@ -17,5 +17,8 @@ from .__response import(
     ContractInfoResponse,
     FundInfoResponse,
     OHLCVLast1mResponse,
-    OverviewResponse
+    OverviewResponse,
+    
+    OHLCVResponse,
+    CorporateActionResponse,
 )

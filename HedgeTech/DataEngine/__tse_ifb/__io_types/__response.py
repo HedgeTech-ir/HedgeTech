@@ -375,3 +375,50 @@ class OverviewResponse:
         ]
     ]
     Status: Status
+    
+# +--------------------------------------------------------------------------------------+ #
+ 
+@dataclass
+class OHLCV:
+    Date_timestamp: List[int]
+    Open: List[Union[float, int]]
+    High: List[Union[float, int]]
+    Low: List[Union[float, int]]
+    Close: List[Union[float, int]]
+    Volume: List[int]
+    symbolName: str
+    symbolIsin: str
+
+
+@dataclass
+class OHLCVResponse:  # EXPOSE
+    Data: OHLCV
+    Status: Status
+
+# +--------------------------------------------------------------------------------------+ #
+
+class DividendAction:
+    Date_timestamp: int
+    corporateAction: str
+    symbolName: str
+    symbolIsin: str
+    سود_تقسیم_شده: Optional[str]
+    تاریخ: str
+
+
+@dataclass
+class CapitalIncreaseAction:
+    Date_timestamp: int
+    corporateAction: str
+    symbolName: str
+    symbolIsin: str
+    سرمایه_قبلی: Optional[str]
+    سرمایه_جدید: Optional[str]
+    درصد_افزایش: Optional[str]
+    تاریخ: str
+
+
+@dataclass
+class CorporateActionResponse:  # EXPOSE
+    Data: List[Union[DividendAction, CapitalIncreaseAction, None]]
+    Status: Status
