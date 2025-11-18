@@ -2,26 +2,26 @@
 #                                      Imports                                      #
 # ========================================|======================================== #
 
-from dataclasses import dataclass
 from datetime import datetime
 from typing import (
     List,
     Union,
     Dict,
     Optional,
+    TypedDict,
 )
 
 # ========================================|======================================== #
 #                                 Class Definitions                                 #
 # ========================================|======================================== #
 
-@dataclass
-class StatusDescription:
+
+class StatusDescription(TypedDict):
     fa: str
     en: str
 
-@dataclass
-class Status:
+
+class Status(TypedDict):
     State: bool
     ServerTimeStamp: float
     Version: str
@@ -31,8 +31,8 @@ class Status:
 
 # +--------------------------------------------------------------------------------------+ #
 
-@dataclass
-class SecuritiesAndFunds:
+
+class SecuritiesAndFunds(TypedDict):
     symbolIsin: str
     symbolName: str
     title: str
@@ -62,8 +62,8 @@ class SecuritiesAndFunds:
 
 # +--------------------------------------------------------------------------------------+ #
 
-@dataclass
-class StockFutures:
+
+class StockFutures(TypedDict):
     symbolIsin: str
     title: str
     symbolName: str
@@ -112,8 +112,8 @@ class StockFutures:
 
 # +--------------------------------------------------------------------------------------+ #
 
-@dataclass
-class StockOptions:
+
+class StockOptions(TypedDict):
     symbolIsin: str
     symbolName: str
     title: str
@@ -160,8 +160,8 @@ class StockOptions:
 
 # +--------------------------------------------------------------------------------------+ #
 
-@dataclass
-class TreasuryBonds:
+
+class TreasuryBonds(TypedDict):
     symbolIsin: str
     symbolName: str
     title: str
@@ -195,8 +195,8 @@ class TreasuryBonds:
 
 # +--------------------------------------------------------------------------------------+ #
 
-@dataclass
-class Instruments:
+
+class Instruments(TypedDict):
     Data: List[
         Union[
             SecuritiesAndFunds,
@@ -210,8 +210,8 @@ class Instruments:
     
 # +--------------------------------------------------------------------------------------+ #
 
-@dataclass
-class BestLimitItem:
+
+class BestLimitItem(TypedDict):
     buy_order_count: int
     buy_quantity: int
     buy_price: int
@@ -219,38 +219,38 @@ class BestLimitItem:
     sell_quantity: int
     sell_price: int
 
-@dataclass
-class BestLimit:
+
+class BestLimit(TypedDict):
     items: Dict[str, Dict[str, BestLimitItem]]
 
-@dataclass
-class BestLimitResponse:
+
+class BestLimitResponse(TypedDict):
     Data: BestLimit
     Status: Status
     
 # +--------------------------------------------------------------------------------------+ #
 
-@dataclass
-class OrderItem:
+
+class OrderItem(TypedDict):
     price: float
     quantity: int
     count: int
 
-@dataclass
-class OrderBook:
+
+class OrderBook(TypedDict):
     Buy: List[OrderItem]
     Sell: List[OrderItem]
 
-@dataclass
-class OrderBookResponse:
+
+class OrderBookResponse(TypedDict):
     Data: Dict[str, OrderBook]
     Status: Status
     
 # +--------------------------------------------------------------------------------------+ #
 
 
-@dataclass
-class Aggregate:
+
+class Aggregate(TypedDict):
     date: str
     time: str
     trade_count: int
@@ -263,15 +263,15 @@ class Aggregate:
     open_price: float
     previous_close: float
 
-@dataclass
-class AggregateResponse:
+
+class AggregateResponse(TypedDict):
     Data: Dict[str, Aggregate]
     Status: Status
     
 # +--------------------------------------------------------------------------------------+ #
 
-@dataclass
-class institutional_vs_individual:
+
+class institutional_vs_individual(TypedDict):
     buy_count_individual: int
     buy_volume_individual: int
     buy_count_institution: int
@@ -281,56 +281,56 @@ class institutional_vs_individual:
     sell_count_institution: int
     sell_volume_institution: int
 
-@dataclass
-class Institutional_vs_IndividualItemResponse:
+
+class Institutional_vs_IndividualItemResponse(TypedDict):
     Data: Dict[str, institutional_vs_individual]
     Status: Status
     
 # +--------------------------------------------------------------------------------------+ #
 
-@dataclass
-class ContractInfo:
+
+class ContractInfo(TypedDict):
     open_interest: int
     initial_margin: int
     required_margin: int
 
-@dataclass
-class ContractInfoResponse:
+
+class ContractInfoResponse(TypedDict):
     Data: Dict[str, ContractInfo]
     Status: Status
 
 # +--------------------------------------------------------------------------------------+ #
     
-@dataclass
-class FundInfo:
+
+class FundInfo(TypedDict):
     nav: float
     units: int
     marketCap: int
     as_of: datetime
 
-@dataclass
-class FundInfoResponse:
+
+class FundInfoResponse(TypedDict):
     Data: Dict[str, FundInfo]
     Status: Status
     
 # +--------------------------------------------------------------------------------------+ #
 
-@dataclass
-class OHLCV:
+
+class OHLCV(TypedDict):
     open: float
     high: float
     low: float
     close: float
     volume: int
 
-@dataclass
-class OHLCVLast1mResponse:
+
+class OHLCVLast1mResponse(TypedDict):
     Data: Dict[str, OHLCV]
     Status: Status
     
 # +--------------------------------------------------------------------------------------+ #
 
-@dataclass
+
 class OverviewSecuritiesAndFunds(SecuritiesAndFunds):
     BestLimit: Dict[str, BestLimitItem]
     Aggregate: Aggregate
@@ -338,7 +338,7 @@ class OverviewSecuritiesAndFunds(SecuritiesAndFunds):
     FundInfo: FundInfo
     ContractInfo: ContractInfo
 
-@dataclass
+
 class OverviewTreasuryBonds(TreasuryBonds):
     BestLimit: Dict[str, BestLimitItem]
     Aggregate: Aggregate
@@ -346,7 +346,7 @@ class OverviewTreasuryBonds(TreasuryBonds):
     FundInfo: FundInfo
     ContractInfo: ContractInfo
 
-@dataclass
+
 class OverviewStockOptions(StockOptions):
     BestLimit: Dict[str, BestLimitItem]
     Aggregate: Aggregate
@@ -354,7 +354,7 @@ class OverviewStockOptions(StockOptions):
     FundInfo: FundInfo
     ContractInfo: ContractInfo
 
-@dataclass
+
 class OverviewStockFuturess(StockFutures):
     BestLimit: Dict[str, BestLimitItem]
     Aggregate: Aggregate
@@ -362,7 +362,7 @@ class OverviewStockFuturess(StockFutures):
     FundInfo: FundInfo
     ContractInfo: ContractInfo
 
-@dataclass
+
 class OverviewResponse:
     Data : Dict[
         str,Optional[
@@ -378,8 +378,8 @@ class OverviewResponse:
     
 # +--------------------------------------------------------------------------------------+ #
  
-@dataclass
-class OHLCV:
+
+class OHLCV(TypedDict):
     Date_timestamp: List[int]
     Open: List[Union[float, int]]
     High: List[Union[float, int]]
@@ -390,14 +390,14 @@ class OHLCV:
     symbolIsin: str
 
 
-@dataclass
-class OHLCVResponse:  # EXPOSE
+
+class OHLCVResponse(TypedDict):
     Data: OHLCV
     Status: Status
 
 # +--------------------------------------------------------------------------------------+ #
 
-class DividendAction:
+class DividendAction(TypedDict):
     Date_timestamp: int
     corporateAction: str
     symbolName: str
@@ -406,8 +406,7 @@ class DividendAction:
     تاریخ: str
 
 
-@dataclass
-class CapitalIncreaseAction:
+class CapitalIncreaseAction(TypedDict):
     Date_timestamp: int
     corporateAction: str
     symbolName: str
@@ -418,7 +417,7 @@ class CapitalIncreaseAction:
     تاریخ: str
 
 
-@dataclass
-class CorporateActionResponse:  # EXPOSE
+
+class CorporateActionResponse(TypedDict): 
     Data: List[Union[DividendAction, CapitalIncreaseAction, None]]
     Status: Status
