@@ -8,7 +8,15 @@ from typing import (
     List,
 )
 from .__io_types import (
-    Instruments
+    Instruments,
+    OverviewResponse,
+    BestLimitResponse,
+    OrderBookResponse,
+    AggregateResponse,
+    Institutional_vs_IndividualItemResponse,
+    ContractInfoResponse,
+    FundInfoResponse,
+    OHLCVLast1mResponse,
 )
 
 # ========================================|======================================== #
@@ -58,7 +66,7 @@ class DataEngine_TseIfb_SyncClient:
         
     # +--------------------------------------------------------------------------------------+ #
     
-    def Get_instruments_by_name(self,symbol_names : List[str])-> Instruments | None:
+    def instruments_static_info_by_name(self,symbol_names : List[str])-> Instruments | None:
         
         data = self.__AuthSyncClient.httpx_Client.get(
             url='https://core.hedgetech.ir/data-engine/tse-ifb/static/data/instruments/symbol/name',
@@ -76,7 +84,7 @@ class DataEngine_TseIfb_SyncClient:
         
     # +--------------------------------------------------------------------------------------+ #
     
-    def Get_instruments_by_isin(self,symbol_isins : List[str])-> Instruments | None:
+    def instruments_static_info_by_isin(self,symbol_isins : List[str])-> Instruments | None:
         
         data = self.__AuthSyncClient.httpx_Client.get(
             url='https://core.hedgetech.ir/data-engine/tse-ifb/static/data/instruments/symbol/isin',
@@ -94,3 +102,288 @@ class DataEngine_TseIfb_SyncClient:
         
     # +--------------------------------------------------------------------------------------+ #
         
+    def live_overview_by_name(self,symbol_names : List[str])-> OverviewResponse | None:
+        
+        data = self.__AuthSyncClient.httpx_Client.get(
+            url='https://core.hedgetech.ir/data-engine/tse-ifb/live/data/instruments/overview/symbol/name',
+            params=[('symbol_names', name) for name in symbol_names]
+        )
+        
+        if data.is_success :
+            
+            return data.json()
+        
+        else :
+            
+            raise ValueError(data.json().get('detail'))
+        
+        
+    # +--------------------------------------------------------------------------------------+ #
+    
+    
+    def live_overview_by_isin(self,symbol_isins : List[str])-> OverviewResponse | None:
+        
+        data = self.__AuthSyncClient.httpx_Client.get(
+            url='https://core.hedgetech.ir/data-engine/tse-ifb/live/data/instruments/overview/symbol/isin',
+            params=[('symbol_isins', isin) for isin in symbol_isins]
+        )
+        
+        if data.is_success :
+            
+            return data.json()
+        
+        else :
+            
+            raise ValueError(data.json().get('detail'))
+        
+    # +--------------------------------------------------------------------------------------+ #
+        
+    def live_best_limit_by_name(self,symbol_names : List[str])-> BestLimitResponse | None:
+        
+        data = self.__AuthSyncClient.httpx_Client.get(
+            url='https://core.hedgetech.ir/data-engine/tse-ifb/live/data/instruments/best-limit/symbol/name',
+            params=[('symbol_names', name) for name in symbol_names]
+        )
+        
+        if data.is_success :
+            
+            return data.json()
+        
+        else :
+            
+            raise ValueError(data.json().get('detail'))
+        
+        
+    # +--------------------------------------------------------------------------------------+ #
+    
+    
+    def live_best_limit_by_isin(self,symbol_isins : List[str])-> BestLimitResponse | None:
+        
+        data = self.__AuthSyncClient.httpx_Client.get(
+            url='https://core.hedgetech.ir/data-engine/tse-ifb/live/data/instruments/best-limit/symbol/isin',
+            params=[('symbol_isins', isin) for isin in symbol_isins]
+        )
+        
+        if data.is_success :
+            
+            return data.json()
+        
+        else :
+            
+            raise ValueError(data.json().get('detail'))
+        
+    # +--------------------------------------------------------------------------------------+ #
+        
+    def live_order_book_by_name(self,symbol_names : List[str])-> OrderBookResponse | None:
+        
+        data = self.__AuthSyncClient.httpx_Client.get(
+            url='https://core.hedgetech.ir/data-engine/tse-ifb/live/data/instruments/order-book/symbol/name',
+            params=[('symbol_names', name) for name in symbol_names]
+        )
+        
+        if data.is_success :
+            
+            return data.json()
+        
+        else :
+            
+            raise ValueError(data.json().get('detail'))
+        
+        
+    # +--------------------------------------------------------------------------------------+ #
+    
+    
+    def live_order_book_by_isin(self,symbol_isins : List[str])-> OrderBookResponse | None:
+        
+        data = self.__AuthSyncClient.httpx_Client.get(
+            url='https://core.hedgetech.ir/data-engine/tse-ifb/live/data/instruments/order-book/symbol/isin',
+            params=[('symbol_isins', isin) for isin in symbol_isins]
+        )
+        
+        if data.is_success :
+            
+            return data.json()
+        
+        else :
+            
+            raise ValueError(data.json().get('detail'))
+        
+    # +--------------------------------------------------------------------------------------+ #
+        
+    def live_aggregate_by_name(self,symbol_names : List[str])-> AggregateResponse | None:
+        
+        data = self.__AuthSyncClient.httpx_Client.get(
+            url='https://core.hedgetech.ir/data-engine/tse-ifb/live/data/instruments/aggregate/symbol/name',
+            params=[('symbol_names', name) for name in symbol_names]
+        )
+        
+        if data.is_success :
+            
+            return data.json()
+        
+        else :
+            
+            raise ValueError(data.json().get('detail'))
+        
+        
+    # +--------------------------------------------------------------------------------------+ #
+    
+    
+    def live_aggregate_by_isin(self,symbol_isins : List[str])-> AggregateResponse | None:
+        
+        data = self.__AuthSyncClient.httpx_Client.get(
+            url='https://core.hedgetech.ir/data-engine/tse-ifb/live/data/instruments/aggregate/symbol/isin',
+            params=[('symbol_isins', isin) for isin in symbol_isins]
+        )
+        
+        if data.is_success :
+            
+            return data.json()
+        
+        else :
+            
+            raise ValueError(data.json().get('detail'))
+        
+    # +--------------------------------------------------------------------------------------+ #
+        
+    def live_institutional_vs_individual_by_name(self,symbol_names : List[str])-> Institutional_vs_IndividualItemResponse | None:
+        
+        data = self.__AuthSyncClient.httpx_Client.get(
+            url='https://core.hedgetech.ir/data-engine/tse-ifb/live/data/instruments/institutional-vs-individual/symbol/name',
+            params=[('symbol_names', name) for name in symbol_names]
+        )
+        
+        if data.is_success :
+            
+            return data.json()
+        
+        else :
+            
+            raise ValueError(data.json().get('detail'))
+        
+        
+    # +--------------------------------------------------------------------------------------+ #
+    
+    
+    def live_institutional_vs_individual_by_isin(self,symbol_isins : List[str])-> Institutional_vs_IndividualItemResponse | None:
+        
+        data = self.__AuthSyncClient.httpx_Client.get(
+            url='https://core.hedgetech.ir/data-engine/tse-ifb/live/data/instruments/institutional-vs-individual/symbol/isin',
+            params=[('symbol_isins', isin) for isin in symbol_isins]
+        )
+        
+        if data.is_success :
+            
+            return data.json()
+        
+        else :
+            
+            raise ValueError(data.json().get('detail'))
+        
+    # +--------------------------------------------------------------------------------------+ #
+        
+    def live_contract_info_by_name(self,symbol_names : List[str])-> ContractInfoResponse | None:
+        
+        data = self.__AuthSyncClient.httpx_Client.get(
+            url='https://core.hedgetech.ir/data-engine/tse-ifb/live/data/instruments/contract-info/symbol/name',
+            params=[('symbol_names', name) for name in symbol_names]
+        )
+        
+        if data.is_success :
+            
+            return data.json()
+        
+        else :
+            
+            raise ValueError(data.json().get('detail'))
+        
+        
+    # +--------------------------------------------------------------------------------------+ #
+    
+    
+    def live_contract_info_by_isin(self,symbol_isins : List[str])-> ContractInfoResponse | None:
+        
+        data = self.__AuthSyncClient.httpx_Client.get(
+            url='https://core.hedgetech.ir/data-engine/tse-ifb/live/data/instruments/contract-info/symbol/isin',
+            params=[('symbol_isins', isin) for isin in symbol_isins]
+        )
+        
+        if data.is_success :
+            
+            return data.json()
+        
+        else :
+            
+            raise ValueError(data.json().get('detail'))
+        
+    # +--------------------------------------------------------------------------------------+ #
+        
+    def live_fund_info_by_name(self,symbol_names : List[str])-> FundInfoResponse | None:
+        
+        data = self.__AuthSyncClient.httpx_Client.get(
+            url='https://core.hedgetech.ir/data-engine/tse-ifb/live/data/instruments/fund-info/symbol/name',
+            params=[('symbol_names', name) for name in symbol_names]
+        )
+        
+        if data.is_success :
+            
+            return data.json()
+        
+        else :
+            
+            raise ValueError(data.json().get('detail'))
+        
+        
+    # +--------------------------------------------------------------------------------------+ #
+    
+    
+    def live_fund_info_by_isin(self,symbol_isins : List[str])-> FundInfoResponse | None:
+        
+        data = self.__AuthSyncClient.httpx_Client.get(
+            url='https://core.hedgetech.ir/data-engine/tse-ifb/live/data/instruments/fund-info/symbol/isin',
+            params=[('symbol_isins', isin) for isin in symbol_isins]
+        )
+        
+        if data.is_success :
+            
+            return data.json()
+        
+        else :
+            
+            raise ValueError(data.json().get('detail'))
+        
+    # +--------------------------------------------------------------------------------------+ #
+        
+    def live_ohlcv_last1m_by_name(self,symbol_names : List[str])-> OHLCVLast1mResponse | None:
+        
+        data = self.__AuthSyncClient.httpx_Client.get(
+            url='https://core.hedgetech.ir/data-engine/tse-ifb/live/data/instruments/ohlcv-last-1m/symbol/name',
+            params=[('symbol_names', name) for name in symbol_names]
+        )
+        
+        if data.is_success :
+            
+            return data.json()
+        
+        else :
+            
+            raise ValueError(data.json().get('detail'))
+        
+        
+    # +--------------------------------------------------------------------------------------+ #
+    
+    
+    def live_ohlcv_last1m_by_isin(self,symbol_isins : List[str])-> OHLCVLast1mResponse | None:
+        
+        data = self.__AuthSyncClient.httpx_Client.get(
+            url='https://core.hedgetech.ir/data-engine/tse-ifb/live/data/instruments/ohlcv-last-1m/symbol/isin',
+            params=[('symbol_isins', isin) for isin in symbol_isins]
+        )
+        
+        if data.is_success :
+            
+            return data.json()
+        
+        else :
+            
+            raise ValueError(data.json().get('detail'))
