@@ -5,7 +5,6 @@
 from httpx import (
     Client ,
     Timeout ,
-    Response
 )
 from jwt import decode
 
@@ -54,20 +53,10 @@ class AuthSyncClient:
         Password : str
     )-> "AuthSyncClient":
         
-        httpx_Client = Client(
-            verify=True ,
-            http1=False ,
-            http2=True ,
-            timeout=Timeout(
-                connect=.5,
-                read=1,
-                write=1,
-                pool=.5,
-            ),
-        )
+        httpx_Client = Client(verify=True ,http1=False ,http2=True)
         
         
-        login_res : Response = httpx_Client.post(
+        login_res = httpx_Client.post(
             url='https://core.hedgetech.ir/auth/user/token/issue',
             data={
                 'UserName_or_Email' : UserName_or_Email,
@@ -77,6 +66,23 @@ class AuthSyncClient:
         
 
         if login_res.status_code == 201:
+            
+            token = login_res.json()
+            headers = {'origin'  : 'https://core.hedgetech.ir'}
+            headers.update(token)
+            
+            httpx_Client = Client(
+                verify=True ,
+                http1=False ,
+                http2=True ,
+                headers=headers,
+                timeout=Timeout(
+                    connect=.5,
+                    read=1,
+                    write=1,
+                    pool=.5,
+                ),
+            )
             
             return cls(
                 httpx_Client = httpx_Client,
