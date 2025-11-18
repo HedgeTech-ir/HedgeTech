@@ -70,12 +70,13 @@ class AuthSyncClient:
             token = login_res.json()
             headers = {'origin'  : 'https://core.hedgetech.ir'}
             headers.update(token)
-            
+                        
             httpx_Client = Client(
                 verify=True ,
                 http1=False ,
                 http2=True ,
                 headers=headers,
+                cookies=httpx_Client.cookies,
                 timeout=Timeout(
                     connect=.5,
                     read=1,
