@@ -26,15 +26,3 @@ class SymbolIsins:
     symbol_isins: List[str] = field(metadata={"description": "List of symbol isin"})
     
 # +--------------------------------------------------------------------------------------+ #
-
-
-def test(input:SymbolNames)-> SymbolIsins:
-    """_summary_
-
-    Args:
-        input (SymbolNames): _description_
-
-    Returns:
-        SymbolIsins: _description_
-    """
-    ...
