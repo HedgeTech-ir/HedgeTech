@@ -17,6 +17,10 @@ from .__io_types import (
     ContractInfoResponse,
     FundInfoResponse,
     OHLCVLast1mResponse,
+    
+    OHLCVResponse,
+    CorporateActionResponse,
+    
 )
 
 # ========================================|======================================== #
@@ -38,6 +42,7 @@ class DataEngine_TseIfb_SyncClient:
     
     def search_instruments(
         self,
+        *,
         market : Literal[
             "SecuritiesAndFunds",
             "TreasuryBonds",
@@ -378,6 +383,126 @@ class DataEngine_TseIfb_SyncClient:
         data = self.__AuthSyncClient.httpx_Client.get(
             url='https://core.hedgetech.ir/data-engine/tse-ifb/live/data/instruments/ohlcv-last-1m/symbol/isin',
             params=[('symbol_isins', isin) for isin in symbol_isins]
+        )
+        
+        if data.is_success :
+            
+            return data.json()
+        
+        else :
+            
+            raise ValueError(data.json().get('detail'))
+        
+    # +--------------------------------------------------------------------------------------+ #
+        
+    def historical_ohlcv_by_name(
+        self,
+        *,
+        symbolName : str,
+        start_timestamp : int,
+        end_timestamp : int,
+        AdjustedPrice : bool,
+        Resolution : Literal["1m","5m","15m","30m","1h","D","W","M",]
+    )-> OHLCVResponse | None:
+        
+        data = self.__AuthSyncClient.httpx_Client.get(
+            url='https://core.hedgetech.ir/data-engine/tse-ifb/historical/data/instruments/ohlcv/symbol/name',
+            params={
+                'symbolName' : symbolName,
+                'start_timestamp' : start_timestamp,
+                'end_timestamp' : end_timestamp,
+                'AdjustedPrice' : AdjustedPrice,
+                'Resolution' : Resolution,
+            }
+        )
+        
+        if data.is_success :
+            
+            return data.json()
+        
+        else :
+            
+            raise ValueError(data.json().get('detail'))
+        
+        
+    # +--------------------------------------------------------------------------------------+ #
+    
+    
+    def historical_ohlcv_by_isin(
+        self,
+        *,
+        isin : str,
+        start_timestamp : int,
+        end_timestamp : int,
+        AdjustedPrice : bool,
+        Resolution : Literal["1m","5m","15m","30m","1h","D","W","M",]
+    )-> OHLCVResponse | None:
+        
+        data = self.__AuthSyncClient.httpx_Client.get(
+            url='https://core.hedgetech.ir/data-engine/tse-ifb/historical/data/instruments/ohlcv/symbol/isin',
+            params={
+                'isin' : isin,
+                'start_timestamp' : start_timestamp,
+                'end_timestamp' : end_timestamp,
+                'AdjustedPrice' : AdjustedPrice,
+                'Resolution' : Resolution,
+            }
+        )
+        
+        if data.is_success :
+            
+            return data.json()
+        
+        else :
+            
+            raise ValueError(data.json().get('detail'))
+        
+    # +--------------------------------------------------------------------------------------+ #
+        
+    def historical_corporateactions_by_name(
+        self,
+        *,
+        symbolName : str,
+        start_timestamp : int,
+        end_timestamp : int,
+    )-> CorporateActionResponse | None:
+        
+        data = self.__AuthSyncClient.httpx_Client.get(
+            url='https://core.hedgetech.ir/data-engine/tse-ifb/historical/data/instruments/corporateactions/symbol/name',
+            params={
+                'symbolName' : symbolName,
+                'start_timestamp' : start_timestamp,
+                'end_timestamp' : end_timestamp,
+            }
+        )
+        
+        if data.is_success :
+            
+            return data.json()
+        
+        else :
+            
+            raise ValueError(data.json().get('detail'))
+        
+        
+    # +--------------------------------------------------------------------------------------+ #
+    
+    
+    def historical_corporateactions_by_isin(
+        self,
+        *,
+        isin : str,
+        start_timestamp : int,
+        end_timestamp : int,
+    )-> CorporateActionResponse | None:
+        
+        data = self.__AuthSyncClient.httpx_Client.get(
+            url='https://core.hedgetech.ir/data-engine/tse-ifb/historical/data/instruments/corporateactions/symbol/isin',
+            params={
+                'isin' : isin,
+                'start_timestamp' : start_timestamp,
+                'end_timestamp' : end_timestamp,
+            }
         )
         
         if data.is_success :
