@@ -3,7 +3,13 @@
 # ========================================|======================================== #
 
 from dataclasses import dataclass
-from typing import List, Union, Optional
+from datetime import datetime
+from typing import (
+    List,
+    Union,
+    Dict,
+    Optional,
+)
 
 # ========================================|======================================== #
 #                                 Class Definitions                                 #
@@ -203,3 +209,169 @@ class Instruments:
     Status: Status
     
 # +--------------------------------------------------------------------------------------+ #
+
+@dataclass
+class BestLimitItem:
+    buy_order_count: int
+    buy_quantity: int
+    buy_price: int
+    sell_order_count: int
+    sell_quantity: int
+    sell_price: int
+
+@dataclass
+class BestLimit:
+    items: Dict[str, Dict[str, BestLimitItem]]
+
+@dataclass
+class BestLimitResponse:
+    Data: BestLimit
+    Status: Status
+    
+# +--------------------------------------------------------------------------------------+ #
+
+@dataclass
+class OrderItem:
+    price: float
+    quantity: int
+    count: int
+
+@dataclass
+class OrderBook:
+    Buy: List[OrderItem]
+    Sell: List[OrderItem]
+
+@dataclass
+class OrderBookResponse:
+    Data: Dict[str, OrderBook]
+    Status: Status
+    
+# +--------------------------------------------------------------------------------------+ #
+
+
+@dataclass
+class Aggregate:
+    date: str
+    time: str
+    trade_count: int
+    total_volume: int
+    total_value: int
+    closing_price: float
+    last_price: float
+    low_price: float
+    high_price: float
+    open_price: float
+    previous_close: float
+
+@dataclass
+class AggregateResponse:
+    Data: Dict[str, Aggregate]
+    Status: Status
+    
+# +--------------------------------------------------------------------------------------+ #
+
+@dataclass
+class institutional_vs_individual:
+    buy_count_individual: int
+    buy_volume_individual: int
+    buy_count_institution: int
+    buy_volume_institution: int
+    sell_count_individual: int
+    sell_volume_individual: int
+    sell_count_institution: int
+    sell_volume_institution: int
+
+@dataclass
+class Institutional_vs_IndividualItemResponse:
+    Data: Dict[str, institutional_vs_individual]
+    Status: Status
+    
+# +--------------------------------------------------------------------------------------+ #
+
+@dataclass
+class ContractInfo:
+    open_interest: int
+    initial_margin: int
+    required_margin: int
+
+@dataclass
+class ContractInfoResponse:
+    Data: Dict[str, ContractInfo]
+    Status: Status
+
+# +--------------------------------------------------------------------------------------+ #
+    
+@dataclass
+class FundInfo:
+    nav: float
+    units: int
+    marketCap: int
+    as_of: datetime
+
+@dataclass
+class FundInfoResponse:
+    Data: Dict[str, FundInfo]
+    Status: Status
+    
+# +--------------------------------------------------------------------------------------+ #
+
+@dataclass
+class OHLCV:
+    open: float
+    high: float
+    low: float
+    close: float
+    volume: int
+
+@dataclass
+class OHLCVLast1mResponse:
+    Data: Dict[str, OHLCV]
+    Status: Status
+    
+# +--------------------------------------------------------------------------------------+ #
+
+@dataclass
+class OverviewSecuritiesAndFunds(SecuritiesAndFunds):
+    BestLimit: Dict[str, BestLimitItem]
+    Aggregate: Aggregate
+    institutional_vs_individual: institutional_vs_individual
+    FundInfo: FundInfo
+    ContractInfo: ContractInfo
+
+@dataclass
+class OverviewTreasuryBonds(TreasuryBonds):
+    BestLimit: Dict[str, BestLimitItem]
+    Aggregate: Aggregate
+    institutional_vs_individual: institutional_vs_individual
+    FundInfo: FundInfo
+    ContractInfo: ContractInfo
+
+@dataclass
+class OverviewStockOptions(StockOptions):
+    BestLimit: Dict[str, BestLimitItem]
+    Aggregate: Aggregate
+    institutional_vs_individual: institutional_vs_individual
+    FundInfo: FundInfo
+    ContractInfo: ContractInfo
+
+@dataclass
+class OverviewStockFuturess(StockFutures):
+    BestLimit: Dict[str, BestLimitItem]
+    Aggregate: Aggregate
+    institutional_vs_individual: institutional_vs_individual
+    FundInfo: FundInfo
+    ContractInfo: ContractInfo
+
+@dataclass
+class OverviewResponse:
+    Data : Dict[
+        str,Optional[
+            Union[
+                OverviewSecuritiesAndFunds,
+                OverviewTreasuryBonds,
+                OverviewStockOptions,
+                OverviewStockFuturess
+            ]
+        ]
+    ]
+    Status: Status
