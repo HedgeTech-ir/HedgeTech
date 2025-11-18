@@ -73,3 +73,23 @@ class DataEngine_TseIfb_AsyncClient:
             raise ValueError(data.json().get('detail'))
         
     # +--------------------------------------------------------------------------------------+ #
+    
+    async def Get_instruments_by_isin(self,symbol_isins : List[str])-> Instruments | None:
+        
+        data = await self.__AuthAsyncClient.httpx_Client.get(
+            url='https://core.hedgetech.ir/data-engine/tse-ifb/static/data/instruments/symbol/isin',
+            params=[('symbol_isins', isin) for isin in symbol_isins]
+        )
+        
+        if data.is_success :
+            
+            return data.json()
+        
+        else :
+            
+            raise ValueError(data.json().get('detail'))
+        
+        
+    # +--------------------------------------------------------------------------------------+ #
+        
+    
