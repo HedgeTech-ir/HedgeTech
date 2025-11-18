@@ -3,5 +3,5 @@ from .__response import(
     StockFutures,
     StockOptions,
     TreasuryBonds,
-    InstrumentsSearch,
+    Instruments,
 )

@@ -190,7 +190,7 @@ class TreasuryBonds:
 # +--------------------------------------------------------------------------------------+ #
 
 @dataclass
-class InstrumentsSearch:
+class Instruments:
     Data: List[
         Union[
             SecuritiesAndFunds,
