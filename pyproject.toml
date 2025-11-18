@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "HedgeTech"
 version = "0.0.0"
-description = "Core SDK for integrating with HedgeTech trading and market data APIs"
+description = "A unified, high-performance API layer that powers all trading infrastructure across the HedgeTech ecosystem, providing modular, scalable, and real-time interfaces for market data, order management, and execution systems."
 readme = "README.md"
 requires-python = ">=3.10"
 license = { file = "LICENSE" }
@@ -15,26 +15,48 @@ authors = [
 ]
 
 keywords = [
-  "hedge", "finance", "trading", "oms", "api",
-  "market-data", "execution", "orderbook",
-  "algo-trading", "async", "sdk"
+  "hedge", "finance", "financial-markets", "stocks", "equities",
+  "trading", "algo-trading", "algorithmic-trading", "automated-trading",
+  "oms", "order-management-system", "execution", "orderbook", "real-time",
+  "high-frequency", "portfolio-management", "risk-management",
+  "market-data", "exchange-api", "sdk", "python", "async", "websocket"
 ]
 
 classifiers = [
     "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+
+
     "License :: OSI Approved :: Apache Software License",
     "Operating System :: OS Independent",
+
     "Development Status :: 3 - Alpha",
+
     "Intended Audience :: Developers",
     "Intended Audience :: Financial and Insurance Industry",
-    "Topic :: Software Development :: Libraries"
+
+    "Topic :: Office/Business :: Financial",
+    "Topic :: Scientific/Engineering :: Information Analysis",
+    "Topic :: System :: Networking",
+    "Topic :: Internet :: WWW/HTTP",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+
+    "Framework :: AsyncIO",
+    "Typing :: Typed"
 ]
 
 dependencies = [
   "httpx[http2]==0.28.1",
+  "brotli==1.2.0",
+  "zstd==1.5.7.2",
+  "PyJWT==2.10.1",
+  "websockets==15.0.1",
 ]
 
 [project.urls]
-Homepage = "https://github.com/HedgeTech-ir/HedgeTech"
+Homepage = "https://hedgetech.ir/landing/"
 Documentation = "https://github.com/HedgeTech-ir/HedgeTech/blob/main/README.md"
 Repository = "https://github.com/HedgeTech-ir/HedgeTech"
