@@ -34,5 +34,6 @@ from .__response import(
     ContractInfo_WS_symbolName,
     FundInfo_WS_symbolIsin,
     FundInfo_WS_symbolName,
-    
+    OHLCV_WS_symbolIsin,
+    OHLCV_WS_symbolName,
 )
