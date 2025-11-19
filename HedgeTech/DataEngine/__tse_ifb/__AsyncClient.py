@@ -573,8 +573,11 @@ class DataEngine_TseIfb_AsyncClient:
                         
             while event.is_set():
                 
-                try : yield loads(await ws.recv())
-                except : continue
+                try: 
+                    yield loads(await ws.recv())
+                except : 
+                    await ws.close()
+                    break
                 
     # +--------------------------------------------------------------------------------------+ #
     
@@ -621,5 +624,8 @@ class DataEngine_TseIfb_AsyncClient:
             
             while event.is_set():
                 
-                try: yield loads(await ws.recv())
-                except : continue
+                try: 
+                    yield loads(await ws.recv())
+                except : 
+                    await ws.close()
+                    break
