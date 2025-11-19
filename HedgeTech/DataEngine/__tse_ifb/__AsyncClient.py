@@ -48,7 +48,7 @@ class DataEngine_TseIfb_AsyncClient:
             "StockFutures",  
         ],
         Search_char : str,
-    )-> Instruments | None:
+    )-> Instruments :
         
         data = await self.__AuthAsyncClient.httpx_Client.get(
             url='https://core.hedgetech.ir/data-engine/tse-ifb/static/data/instruments/search',
@@ -68,7 +68,7 @@ class DataEngine_TseIfb_AsyncClient:
     
     # +--------------------------------------------------------------------------------------+ #
     
-    async def instruments_static_info_by_name(self,symbol_names : List[str])-> Instruments | None:
+    async def instruments_static_info_by_name(self,symbol_names : List[str])-> Instruments:
         
         data = await self.__AuthAsyncClient.httpx_Client.get(
             url='https://core.hedgetech.ir/data-engine/tse-ifb/static/data/instruments/symbol/name',
@@ -85,7 +85,7 @@ class DataEngine_TseIfb_AsyncClient:
         
     # +--------------------------------------------------------------------------------------+ #
     
-    async def instruments_static_info_by_isin(self,symbol_isins : List[str])-> Instruments | None:
+    async def instruments_static_info_by_isin(self,symbol_isins : List[str])-> Instruments:
         
         data = await self.__AuthAsyncClient.httpx_Client.get(
             url='https://core.hedgetech.ir/data-engine/tse-ifb/static/data/instruments/symbol/isin',
@@ -102,7 +102,7 @@ class DataEngine_TseIfb_AsyncClient:
         
     # +--------------------------------------------------------------------------------------+ #
         
-    async def live_overview_by_name(self,symbol_names : List[str])-> OverviewResponse | None:
+    async def live_overview_by_name(self,symbol_names : List[str])-> OverviewResponse:
         
         data = await self.__AuthAsyncClient.httpx_Client.get(
             url='https://core.hedgetech.ir/data-engine/tse-ifb/live/data/instruments/overview/symbol/name',
@@ -121,25 +121,7 @@ class DataEngine_TseIfb_AsyncClient:
     # +--------------------------------------------------------------------------------------+ #
     
     
-    async def live_overview_by_isin(self,symbol_isins : List[str])-> OverviewResponse | None:
-        
-        data = await self.__AuthAsyncClient.httpx_Client.get(
-            url='https://core.hedgetech.ir/data-engine/tse-ifb/live/data/instruments/overview/symbol/isin',
-            params=[('symbol_isins', isin) for isin in symbol_isins]
-        )
-        
-        if data.is_success :
-            
-            return data.json()
-        
-        else :
-            
-            raise ValueError(data.json().get('detail'))
-        
-    # +--------------------------------------------------------------------------------------+ #
-    
-    
-    async def live_overview_by_isin(self,symbol_isins : List[str])-> OverviewResponse | None:
+    async def live_overview_by_isin(self,symbol_isins : List[str])-> OverviewResponse:
         
         data = await self.__AuthAsyncClient.httpx_Client.get(
             url='https://core.hedgetech.ir/data-engine/tse-ifb/live/data/instruments/overview/symbol/isin',
@@ -156,7 +138,7 @@ class DataEngine_TseIfb_AsyncClient:
         
     # +--------------------------------------------------------------------------------------+ #
         
-    async def live_best_limit_by_name(self,symbol_names : List[str])-> BestLimitResponse | None:
+    async def live_best_limit_by_name(self,symbol_names : List[str])-> BestLimitResponse:
         
         data = await self.__AuthAsyncClient.httpx_Client.get(
             url='https://core.hedgetech.ir/data-engine/tse-ifb/live/data/instruments/best-limit/symbol/name',
@@ -175,7 +157,7 @@ class DataEngine_TseIfb_AsyncClient:
     # +--------------------------------------------------------------------------------------+ #
     
     
-    async def live_best_limit_by_isin(self,symbol_isins : List[str])-> BestLimitResponse | None:
+    async def live_best_limit_by_isin(self,symbol_isins : List[str])-> BestLimitResponse:
         
         data = await self.__AuthAsyncClient.httpx_Client.get(
             url='https://core.hedgetech.ir/data-engine/tse-ifb/live/data/instruments/best-limit/symbol/isin',
@@ -192,7 +174,7 @@ class DataEngine_TseIfb_AsyncClient:
         
     # +--------------------------------------------------------------------------------------+ #
         
-    async def live_order_book_by_name(self,symbol_names : List[str])-> OrderBookResponse | None:
+    async def live_order_book_by_name(self,symbol_names : List[str])-> OrderBookResponse :
         
         data = await self.__AuthAsyncClient.httpx_Client.get(
             url='https://core.hedgetech.ir/data-engine/tse-ifb/live/data/instruments/order-book/symbol/name',
@@ -211,7 +193,7 @@ class DataEngine_TseIfb_AsyncClient:
     # +--------------------------------------------------------------------------------------+ #
     
     
-    async def live_order_book_by_isin(self,symbol_isins : List[str])-> OrderBookResponse | None:
+    async def live_order_book_by_isin(self,symbol_isins : List[str])-> OrderBookResponse:
         
         data = await self.__AuthAsyncClient.httpx_Client.get(
             url='https://core.hedgetech.ir/data-engine/tse-ifb/live/data/instruments/order-book/symbol/isin',
@@ -228,7 +210,7 @@ class DataEngine_TseIfb_AsyncClient:
         
     # +--------------------------------------------------------------------------------------+ #
         
-    async def live_aggregate_by_name(self,symbol_names : List[str])-> AggregateResponse | None:
+    async def live_aggregate_by_name(self,symbol_names : List[str])-> AggregateResponse:
         
         data = await self.__AuthAsyncClient.httpx_Client.get(
             url='https://core.hedgetech.ir/data-engine/tse-ifb/live/data/instruments/aggregate/symbol/name',
@@ -247,7 +229,7 @@ class DataEngine_TseIfb_AsyncClient:
     # +--------------------------------------------------------------------------------------+ #
     
     
-    async def live_aggregate_by_isin(self,symbol_isins : List[str])-> AggregateResponse | None:
+    async def live_aggregate_by_isin(self,symbol_isins : List[str])-> AggregateResponse :
         
         data = await self.__AuthAsyncClient.httpx_Client.get(
             url='https://core.hedgetech.ir/data-engine/tse-ifb/live/data/instruments/aggregate/symbol/isin',
@@ -264,7 +246,7 @@ class DataEngine_TseIfb_AsyncClient:
         
     # +--------------------------------------------------------------------------------------+ #
         
-    async def live_institutional_vs_individual_by_name(self,symbol_names : List[str])-> Institutional_vs_IndividualItemResponse | None:
+    async def live_institutional_vs_individual_by_name(self,symbol_names : List[str])-> Institutional_vs_IndividualItemResponse:
         
         data = await self.__AuthAsyncClient.httpx_Client.get(
             url='https://core.hedgetech.ir/data-engine/tse-ifb/live/data/instruments/institutional-vs-individual/symbol/name',
@@ -283,7 +265,7 @@ class DataEngine_TseIfb_AsyncClient:
     # +--------------------------------------------------------------------------------------+ #
     
     
-    async def live_institutional_vs_individual_by_isin(self,symbol_isins : List[str])-> Institutional_vs_IndividualItemResponse | None:
+    async def live_institutional_vs_individual_by_isin(self,symbol_isins : List[str])-> Institutional_vs_IndividualItemResponse :
         
         data = await self.__AuthAsyncClient.httpx_Client.get(
             url='https://core.hedgetech.ir/data-engine/tse-ifb/live/data/instruments/institutional-vs-individual/symbol/isin',
@@ -300,7 +282,7 @@ class DataEngine_TseIfb_AsyncClient:
         
     # +--------------------------------------------------------------------------------------+ #
         
-    async def live_contract_info_by_name(self,symbol_names : List[str])-> ContractInfoResponse | None:
+    async def live_contract_info_by_name(self,symbol_names : List[str])-> ContractInfoResponse :
         
         data = await self.__AuthAsyncClient.httpx_Client.get(
             url='https://core.hedgetech.ir/data-engine/tse-ifb/live/data/instruments/contract-info/symbol/name',
@@ -319,7 +301,7 @@ class DataEngine_TseIfb_AsyncClient:
     # +--------------------------------------------------------------------------------------+ #
     
     
-    async def live_contract_info_by_isin(self,symbol_isins : List[str])-> ContractInfoResponse | None:
+    async def live_contract_info_by_isin(self,symbol_isins : List[str])-> ContractInfoResponse :
         
         data = await self.__AuthAsyncClient.httpx_Client.get(
             url='https://core.hedgetech.ir/data-engine/tse-ifb/live/data/instruments/contract-info/symbol/isin',
@@ -336,7 +318,7 @@ class DataEngine_TseIfb_AsyncClient:
         
     # +--------------------------------------------------------------------------------------+ #
         
-    async def live_fund_info_by_name(self,symbol_names : List[str])-> FundInfoResponse | None:
+    async def live_fund_info_by_name(self,symbol_names : List[str])-> FundInfoResponse:
         
         data = await self.__AuthAsyncClient.httpx_Client.get(
             url='https://core.hedgetech.ir/data-engine/tse-ifb/live/data/instruments/fund-info/symbol/name',
@@ -355,7 +337,7 @@ class DataEngine_TseIfb_AsyncClient:
     # +--------------------------------------------------------------------------------------+ #
     
     
-    async def live_fund_info_by_isin(self,symbol_isins : List[str])-> FundInfoResponse | None:
+    async def live_fund_info_by_isin(self,symbol_isins : List[str])-> FundInfoResponse :
         
         data = await self.__AuthAsyncClient.httpx_Client.get(
             url='https://core.hedgetech.ir/data-engine/tse-ifb/live/data/instruments/fund-info/symbol/isin',
@@ -372,7 +354,7 @@ class DataEngine_TseIfb_AsyncClient:
         
     # +--------------------------------------------------------------------------------------+ #
         
-    async def live_ohlcv_last1m_by_name(self,symbol_names : List[str])-> OHLCVLast1mResponse | None:
+    async def live_ohlcv_last1m_by_name(self,symbol_names : List[str])-> OHLCVLast1mResponse :
         
         data = await self.__AuthAsyncClient.httpx_Client.get(
             url='https://core.hedgetech.ir/data-engine/tse-ifb/live/data/instruments/ohlcv-last-1m/symbol/name',
@@ -391,7 +373,7 @@ class DataEngine_TseIfb_AsyncClient:
     # +--------------------------------------------------------------------------------------+ #
     
     
-    async def live_ohlcv_last1m_by_isin(self,symbol_isins : List[str])-> OHLCVLast1mResponse | None:
+    async def live_ohlcv_last1m_by_isin(self,symbol_isins : List[str])-> OHLCVLast1mResponse:
         
         data = await self.__AuthAsyncClient.httpx_Client.get(
             url='https://core.hedgetech.ir/data-engine/tse-ifb/live/data/instruments/ohlcv-last-1m/symbol/isin',
@@ -416,7 +398,7 @@ class DataEngine_TseIfb_AsyncClient:
         end_timestamp : int,
         AdjustedPrice : bool,
         Resolution : Literal["1m","5m","15m","30m","1h","D","W","M",]
-    )-> OHLCVResponse | None:
+    )-> OHLCVResponse:
         
         data = await self.__AuthAsyncClient.httpx_Client.get(
             url='https://core.hedgetech.ir/data-engine/tse-ifb/historical/data/instruments/ohlcv/symbol/name',
@@ -449,7 +431,7 @@ class DataEngine_TseIfb_AsyncClient:
         end_timestamp : int,
         AdjustedPrice : bool,
         Resolution : Literal["1m","5m","15m","30m","1h","D","W","M",]
-    )-> OHLCVResponse | None:
+    )-> OHLCVResponse:
         
         data = await self.__AuthAsyncClient.httpx_Client.get(
             url='https://core.hedgetech.ir/data-engine/tse-ifb/historical/data/instruments/ohlcv/symbol/isin',
@@ -478,7 +460,7 @@ class DataEngine_TseIfb_AsyncClient:
         symbolName : str,
         start_timestamp : int,
         end_timestamp : int,
-    )-> CorporateActionResponse | None:
+    )-> CorporateActionResponse :
         
         data = await self.__AuthAsyncClient.httpx_Client.get(
             url='https://core.hedgetech.ir/data-engine/tse-ifb/historical/data/instruments/corporateactions/symbol/name',
@@ -507,7 +489,7 @@ class DataEngine_TseIfb_AsyncClient:
         isin : str,
         start_timestamp : int,
         end_timestamp : int,
-    )-> CorporateActionResponse | None:
+    )-> CorporateActionResponse:
         
         data = await self.__AuthAsyncClient.httpx_Client.get(
             url='https://core.hedgetech.ir/data-engine/tse-ifb/historical/data/instruments/corporateactions/symbol/isin',
