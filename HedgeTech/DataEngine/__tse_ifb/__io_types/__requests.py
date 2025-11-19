@@ -2,12 +2,9 @@
 #                                      Imports                                      #
 # ========================================|======================================== #
 
-from dataclasses import (
-    dataclass,
-    field
-)
 from typing import (
-    List
+    List,
+    TypedDict
 )
 
 
@@ -15,14 +12,14 @@ from typing import (
 #                                 Class Definitions                                 #
 # ========================================|======================================== #
 
-@dataclass
-class SymbolNames:
-    symbol_names: List[str] = field(metadata={"description": "List of symbol names"})
+
+class SymbolNames(TypedDict):
+    symbol_names: List[str]
 
 # +--------------------------------------------------------------------------------------+ #
 
-@dataclass
-class SymbolIsins:
-    symbol_isins: List[str] = field(metadata={"description": "List of symbol isin"})
+
+class SymbolIsins(TypedDict):
+    symbol_isins: List[str]
     
 # +--------------------------------------------------------------------------------------+ #
