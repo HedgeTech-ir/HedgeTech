@@ -2,10 +2,15 @@
 #                                      Imports                                      #
 # ========================================|======================================== #
 
+from asyncio import Event
+from websockets.asyncio.client import connect
+from json import loads
 from HedgeTech.Auth import AuthAsyncClient
 from typing import (
     Literal,
     List,
+    Union,
+    AsyncGenerator,
 )
 from .__io_types import (
     Instruments,
@@ -33,6 +38,8 @@ from .__io_types import (
     ContractInfo_WS_symbolName,
     FundInfo_WS_symbolIsin,
     FundInfo_WS_symbolName,
+    OHLCV_WS_symbolIsin,
+    OHLCV_WS_symbolName,
 )
 
 # ========================================|======================================== #
@@ -48,7 +55,7 @@ class DataEngine_TseIfb_AsyncClient:
 
         
         self.__AuthAsyncClient = AuthAsyncClient
-        
+                
         
     # +--------------------------------------------------------------------------------------+ #
     
@@ -406,7 +413,7 @@ class DataEngine_TseIfb_AsyncClient:
     async def historical_ohlcv_by_name(
         self,
         *,
-        symbolName : str,
+        symbol_name : str,
         start_timestamp : int,
         end_timestamp : int,
         AdjustedPrice : bool,
@@ -416,7 +423,7 @@ class DataEngine_TseIfb_AsyncClient:
         data = await self.__AuthAsyncClient.httpx_Client.get(
             url='https://core.hedgetech.ir/data-engine/tse-ifb/historical/data/instruments/ohlcv/symbol/name',
             params={
-                'symbolName' : symbolName,
+                'symbolName' : symbol_name,
                 'start_timestamp' : start_timestamp,
                 'end_timestamp' : end_timestamp,
                 'AdjustedPrice' : AdjustedPrice,
@@ -439,7 +446,7 @@ class DataEngine_TseIfb_AsyncClient:
     async def historical_ohlcv_by_isin(
         self,
         *,
-        isin : str,
+        symbol_isin : str,
         start_timestamp : int,
         end_timestamp : int,
         AdjustedPrice : bool,
@@ -449,7 +456,7 @@ class DataEngine_TseIfb_AsyncClient:
         data = await self.__AuthAsyncClient.httpx_Client.get(
             url='https://core.hedgetech.ir/data-engine/tse-ifb/historical/data/instruments/ohlcv/symbol/isin',
             params={
-                'isin' : isin,
+                'isin' : symbol_isin,
                 'start_timestamp' : start_timestamp,
                 'end_timestamp' : end_timestamp,
                 'AdjustedPrice' : AdjustedPrice,
@@ -470,7 +477,7 @@ class DataEngine_TseIfb_AsyncClient:
     async def historical_corporateactions_by_name(
         self,
         *,
-        symbolName : str,
+        symbol_name : str,
         start_timestamp : int,
         end_timestamp : int,
     )-> CorporateActionResponse :
@@ -478,7 +485,7 @@ class DataEngine_TseIfb_AsyncClient:
         data = await self.__AuthAsyncClient.httpx_Client.get(
             url='https://core.hedgetech.ir/data-engine/tse-ifb/historical/data/instruments/corporateactions/symbol/name',
             params={
-                'symbolName' : symbolName,
+                'symbolName' : symbol_name,
                 'start_timestamp' : start_timestamp,
                 'end_timestamp' : end_timestamp,
             }
@@ -499,7 +506,7 @@ class DataEngine_TseIfb_AsyncClient:
     async def historical_corporateactions_by_isin(
         self,
         *,
-        isin : str,
+        symbol_isin : str,
         start_timestamp : int,
         end_timestamp : int,
     )-> CorporateActionResponse:
@@ -507,7 +514,7 @@ class DataEngine_TseIfb_AsyncClient:
         data = await self.__AuthAsyncClient.httpx_Client.get(
             url='https://core.hedgetech.ir/data-engine/tse-ifb/historical/data/instruments/corporateactions/symbol/isin',
             params={
-                'isin' : isin,
+                'isin' : symbol_isin,
                 'start_timestamp' : start_timestamp,
                 'end_timestamp' : end_timestamp,
             }
@@ -520,3 +527,99 @@ class DataEngine_TseIfb_AsyncClient:
         else :
             
             raise ValueError(data.json().get('detail'))
+        
+    # +--------------------------------------------------------------------------------------+ #
+    
+    async def websocket_by_name(
+        self,
+        channels: List[
+            Literal[
+                'best-limit',
+                'order-book',
+                'ohlcv-last-1m',
+                'aggregate',
+                'institutional-vs-individual',
+                'contract-info',
+                'fund-info',
+            ]
+        ],
+        symbol_names: List[str],
+        event: Event | None = None,
+    )-> AsyncGenerator[
+        Union[
+            BestLimit_WS_symbolName,
+            OrderBook_WS_symbolName,
+            Aggregate_WS_symbolName,
+            institutional_vs_individual_WS_symbolName,
+            ContractInfo_WS_symbolName,
+            FundInfo_WS_symbolName,
+            OHLCV_WS_symbolName,
+        ],
+        None
+    ]:
+        
+        if event is None :
+            event = Event()
+            event.set()
+        
+        async with connect(
+            uri=(
+                f"wss://core.hedgetech.ir/data-engine/tse-ifb/live/data/websocket/symbol/name?"
+                + "&".join(f"channels={c}" for c in channels)
+                + "&" + "&".join(f"symbol_names={s}" for s in symbol_names)
+            ),
+            additional_headers=self.__AuthAsyncClient.token
+        ) as ws:
+                        
+            while event.is_set():
+                
+                try : yield loads(await ws.recv())
+                except : continue
+                
+    # +--------------------------------------------------------------------------------------+ #
+    
+    async def websocket_by_isin(
+        self,
+        channels: List[
+            Literal[
+                'best-limit',
+                'order-book',
+                'ohlcv-last-1m',
+                'aggregate',
+                'institutional-vs-individual',
+                'contract-info',
+                'fund-info',
+            ]
+        ],
+        symbol_isins: List[str],
+        event: Event | None = None,
+    )-> AsyncGenerator[
+        Union[
+            BestLimit_WS_symbolIsin,
+            OrderBook_WS_symbolIsin,
+            Aggregate_WS_symbolIsin,
+            institutional_vs_individual_WS_symbolIsin,
+            ContractInfo_WS_symbolIsin,
+            FundInfo_WS_symbolIsin,
+            OHLCV_WS_symbolIsin,
+        ],
+        None
+    ]:
+
+        if event is None :
+            event = Event()
+            event.set()
+        
+        async with connect(
+            uri=(
+                f"wss://core.hedgetech.ir/data-engine/tse-ifb/live/data/websocket/symbol/isin?"
+                + "&".join(f"channels={c}" for c in channels)
+                + "&" + "&".join(f"symbol_isins={s}" for s in symbol_isins)
+            ),
+            additional_headers=self.__AuthAsyncClient.token
+        ) as ws:
+            
+            while event.is_set():
+                
+                try: yield loads(await ws.recv())
+                except : continue
