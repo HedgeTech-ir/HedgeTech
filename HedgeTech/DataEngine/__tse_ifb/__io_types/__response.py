@@ -15,6 +15,17 @@ from typing import (
 #                                 Class Definitions                                 #
 # ========================================|======================================== #
 
+class WebsocketBase_symbolIsin(TypedDict):
+    channel: str
+    symbolIsin: str
+    timestamp: str
+
+
+class WebsocketBase_symbolName(TypedDict):
+    channel: str
+    symbolName: str
+    timestamp: str
+    
 
 class StatusDescription(TypedDict):
     fa: str
@@ -227,7 +238,14 @@ class BestLimit(TypedDict):
 class BestLimitResponse(TypedDict):
     Data: BestLimit
     Status: Status
+
+
+class BestLimit_WS_symbolIsin(WebsocketBase_symbolIsin):
+    data : Dict[str, Dict[str, BestLimitItem]]
     
+class BestLimit_WS_symbolName(WebsocketBase_symbolName):
+    data : Dict[str, Dict[str, BestLimitItem]]
+
 # +--------------------------------------------------------------------------------------+ #
 
 
@@ -245,6 +263,12 @@ class OrderBook(TypedDict):
 class OrderBookResponse(TypedDict):
     Data: Dict[str, OrderBook]
     Status: Status
+    
+class OrderBook_WS_symbolIsin(WebsocketBase_symbolIsin):
+    data : OrderBook
+    
+class OrderBook_WS_symbolName(WebsocketBase_symbolName):
+    data : OrderBook
     
 # +--------------------------------------------------------------------------------------+ #
 
@@ -268,6 +292,12 @@ class AggregateResponse(TypedDict):
     Data: Dict[str, Aggregate]
     Status: Status
     
+class Aggregate_WS_symbolIsin(WebsocketBase_symbolIsin):
+    data : Aggregate
+    
+class Aggregate_WS_symbolName(WebsocketBase_symbolName):
+    data : Aggregate
+    
 # +--------------------------------------------------------------------------------------+ #
 
 
@@ -286,6 +316,12 @@ class Institutional_vs_IndividualItemResponse(TypedDict):
     Data: Dict[str, institutional_vs_individual]
     Status: Status
     
+class institutional_vs_individual_WS_symbolIsin(WebsocketBase_symbolIsin):
+    data : institutional_vs_individual
+    
+class institutional_vs_individual_WS_symbolName(WebsocketBase_symbolName):
+    data : institutional_vs_individual
+    
 # +--------------------------------------------------------------------------------------+ #
 
 
@@ -298,6 +334,12 @@ class ContractInfo(TypedDict):
 class ContractInfoResponse(TypedDict):
     Data: Dict[str, ContractInfo]
     Status: Status
+    
+class ContractInfo_WS_symbolIsin(WebsocketBase_symbolIsin):
+    data : ContractInfo
+    
+class ContractInfo_WS_symbolName(WebsocketBase_symbolName):
+    data : ContractInfo
 
 # +--------------------------------------------------------------------------------------+ #
     
@@ -313,10 +355,16 @@ class FundInfoResponse(TypedDict):
     Data: Dict[str, FundInfo]
     Status: Status
     
+class FundInfo_WS_symbolIsin(WebsocketBase_symbolIsin):
+    data : FundInfo
+    
+class FundInfo_WS_symbolName(WebsocketBase_symbolName):
+    data : FundInfo
+    
 # +--------------------------------------------------------------------------------------+ #
 
 
-class OHLCV(TypedDict):
+class OHLCV_live(TypedDict):
     open: float
     high: float
     low: float
@@ -325,9 +373,16 @@ class OHLCV(TypedDict):
 
 
 class OHLCVLast1mResponse(TypedDict):
-    Data: Dict[str, OHLCV]
+    Data: Dict[str, OHLCV_live]
     Status: Status
+
+class OHLCV_WS_symbolIsin(WebsocketBase_symbolIsin):
+    data : OHLCV_live
     
+class OHLCV_WS_symbolName(WebsocketBase_symbolName):
+    data : OHLCV_live
+    
+
 # +--------------------------------------------------------------------------------------+ #
 
 
@@ -379,7 +434,7 @@ class OverviewResponse:
 # +--------------------------------------------------------------------------------------+ #
  
 
-class OHLCV(TypedDict):
+class OHLCV_historical(TypedDict):
     Date_timestamp: List[int]
     Open: List[Union[float, int]]
     High: List[Union[float, int]]
@@ -392,7 +447,7 @@ class OHLCV(TypedDict):
 
 
 class OHLCVResponse(TypedDict):
-    Data: OHLCV
+    Data: OHLCV_historical
     Status: Status
 
 # +--------------------------------------------------------------------------------------+ #
