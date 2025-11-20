@@ -51,21 +51,39 @@ class DataEngine_TseIfb_AsyncClient:
     """
     Asynchronous client for interacting with the TSE-IFB (Iranian Securities Exchange) Data Engine API.
 
-    This class serves as a high-level wrapper to access live and historical market data,
-    fund information, corporate actions, and other trading-related endpoints asynchronously.
+    This class provides high-level asynchronous methods to retrieve live and historical market data,
+    order book information, best-limit quotes, OHLCV data, fund info, corporate actions, and other
+    trading-related data. It leverages an authenticated `AuthAsyncClient` for authorized access.
+
+    All methods return TypedDict objects defined in the module, providing structured data
+    including:
+        - Instruments, SecuritiesAndFunds, StockOptions, StockFutures, TreasuryBonds
+        - BestLimit, OrderBook, Aggregate, Institutional_vs_Individual
+        - ContractInfo, FundInfo, OHLCV (live and historical)
+        - CorporateActions
 
     Attributes:
-        __AuthAsyncClient (AuthAsyncClient): An instance of `AuthAsyncClient` that manages authentication
-            and provides authorized access to the API.
+        __AuthAsyncClient (AuthAsyncClient): An instance of `AuthAsyncClient` used to perform
+            authorized HTTP requests and WebSocket connections.
 
-    Example:
+    Examples:
         >>> auth_client = await AuthAsyncClient.login(
         ...     UserName_or_Email="user@example.com",
         ...     Password="secure_password"
         ... )
         >>> data_client = DataEngine_TseIfb_AsyncClient(AuthAsyncClient=auth_client)
-        >>> data_client.__AuthAsyncClient.token['Authorization'][:10]
-        'eyJ0eXAiOi'
+        >>> instruments = await data_client.instruments_static_info_by_name(["فملی", "خودرو"])
+        >>> print(instruments["Data"]["فملی"]["symbolName"])
+        >>> async for update in data_client.websocket_by_name(
+        ...     channels=["best-limit", "order-book"],
+        ...     symbol_names=["فملی"]
+        ... ):
+        ...     print(update)
+    
+    Notes:
+        - All network requests are asynchronous and should be awaited.
+        - WebSocket methods yield streaming updates and should be used with `async for`.
+        - Exceptions (ValueError) are raised when the API returns an error or request fails.
     """
     
     def __init__(
