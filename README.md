@@ -66,9 +66,9 @@ The DataEngine is designed to support multiple engines in a modular way. Each en
 #### Async Data Client
 
 ```python
-from HedgeTech.DataEngine import TSEAsyncClient
+from HedgeTech.DataEngine import DataEngine_TseIfb_AsyncClient
 
-client = TSEAsyncClient(auth_async_client)
+client = DataEngine_TseIfb_AsyncClient(auth_async_client)
 data = await client.live_best_limit_by_isin(
     symbol_isins=['IRT1AHRM0001','IRO1IKCO0001']
 )
@@ -78,9 +78,9 @@ print(data)
 #### Sync Data Client
 
 ```python
-from HedgeTech.DataEngine import TSESyncClient
+from HedgeTech.DataEngine import DataEngine_TseIfb_SyncClient
 
-client = TSESyncClient(auth_sync_client)
+client = DataEngine_TseIfb_SyncClient(auth_sync_client)
 data = client.historical_ohlcv_by_name(
     symbolName='مهرگان',
     start_timestamp=0,
