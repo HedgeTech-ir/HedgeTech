@@ -75,6 +75,16 @@ data = await client.live_best_limit_by_isin(
     symbol_isins=['IRT1AHRM0001','IRO1IKCO0001']
 )
 print(data)
+
+# websocket Example
+
+async for update in client.websocket_by_name(
+    channels=["best-limit", "order-book"],
+    symbol_names=["فملی","اطلس"]
+):
+
+    print(update["data"])
+
 ```
 
 #### Sync Data Client
@@ -91,6 +101,16 @@ data = client.historical_ohlcv_by_name(
     Resolution='D'
 )
 print(data)
+
+# websocket Example
+
+for update in client.websocket_by_isin(
+    channels=["best-limit", "order-book"],
+    symbol_isins=["IR1234567890"]
+):
+
+    print(update["data"])
+
 ```
 
 ## Important Notes for Users
