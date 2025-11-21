@@ -49,11 +49,11 @@ classifiers = [
 ]
 
 dependencies = [
-  "httpx[http2]==0.28.1",
-  "brotli==1.2.0",
-  "zstd==1.5.7.2",
-  "PyJWT==2.10.1",
-  "websockets==15.0.1",
+  "httpx[http2]<=0.28.1",
+  "brotli<=1.2.0",
+  "zstd<=1.5.7.2",
+  "PyJWT<=2.10.1",
+  "websockets<=15.0.1",
 ]
 
 [project.urls]
