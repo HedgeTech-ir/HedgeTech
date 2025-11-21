@@ -2,6 +2,8 @@ HedgeTech Python SDK
 
 HedgeTech Python SDK is a professional, lightweight, and modular Python package designed to provide seamless access to HedgeTech services. The SDK is crafted for developers, data analysts, and algorithmic traders who want to interact with the Tehran Stock Exchange (TSE & IFB) using a clean, reliable, and easy-to-use API. It supports both synchronous and asynchronous workflows, offering maximum flexibility and performance for different application scenarios.
 
+> **Note:** This SDK requires Python >= 3.10 and is currently in Beta development status. Some APIs may change in future releases.
+
 ## Features
 
 * Secure authentication with both async and sync clients.
@@ -90,6 +92,15 @@ data = client.historical_ohlcv_by_name(
 )
 print(data)
 ```
+
+## Important Notes for Users
+
+* This SDK requires Python >=3.10.
+* The SDK is currently in Beta (`Development Status :: 4 - Beta`) — APIs may change in future releases.
+* Always install dependencies with the specified versions to avoid compatibility issues.
+* Async clients require an asyncio event loop.
+* All main clients are exposed through top-level modules; you do not need to access internal files.
+* Keywords and classifiers are chosen to make the SDK easy to find for developers working in finance, trading, and data analysis.
 
 ## Modules Overview
 
