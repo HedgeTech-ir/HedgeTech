@@ -1,8 +1,8 @@
-HedgeTech Python SDK
+# HedgeTech Python SDK
 
 HedgeTech Python SDK is a professional, lightweight, and modular Python package designed to provide seamless access to HedgeTech services. The SDK is crafted for developers, data analysts, and algorithmic traders who want to interact with the Tehran Stock Exchange (TSE & IFB) using a clean, reliable, and easy-to-use API. It supports both synchronous and asynchronous workflows, offering maximum flexibility and performance for different application scenarios.
 
-> **Note:** This SDK requires Python >= 3.10 and is currently in Beta development status. Some APIs may change in future releases.
+> **Note:** This SDK requires Python >= 3.10 and is currently in Beta. Some APIs may change in future releases, but it is stable enough for daily use.
 
 ## Features
 
@@ -65,6 +65,8 @@ print(auth_sync_client.token)
 
 The DataEngine is designed to support multiple engines in a modular way. Each engine provides its own async and sync clients, structured request and response types, and can be integrated with other engines such as WebSocket clients.
 
+> **Important Note on Sync vs Async:** All clients have the **same method names and behavior** in both Sync and Async versions. The only difference is how they execute: Sync runs in a blocking manner, while Async requires `await` and an event loop. This design allows you to switch between Sync and Async without changing the logic or input/output of your code.
+
 #### Async Data Client
 
 ```python
@@ -84,7 +86,6 @@ async for update in client.websocket_by_name(
 ):
 
     print(update["data"])
-
 ```
 
 #### Sync Data Client
@@ -110,13 +111,12 @@ for update in client.websocket_by_isin(
 ):
 
     print(update["data"])
-
 ```
 
 ## Important Notes for Users
 
 * This SDK requires Python >=3.10.
-* The SDK is currently in Beta (`Development Status :: 4 - Beta`) — APIs may change in future releases.
+* The SDK is currently in **Beta** — APIs may change in future releases, but it is usable for most workflows.
 * Always install dependencies with the specified versions to avoid compatibility issues.
 * Async clients require an asyncio event loop.
 * All main clients are exposed through top-level modules; you do not need to access internal files.
@@ -142,7 +142,7 @@ We welcome contributions from the community! Please follow standard Python codin
 
 ## License
 
-This project is licensed under the MIT License. See the LICENSE file for full details.
+This project is licensed under the **Apache License 2.0**. See the LICENSE file for full details.
 
 ## Support
 
