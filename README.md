@@ -6,7 +6,7 @@ HedgeTech Python SDK is a professional, lightweight, and modular Python package 
 
 * Secure authentication with both async and sync clients.
 * Real-time and historical market data retrieval from TSE & IFB.
-* Modular and maintainable architecture, designed to support multiple engines (DataEngine engines, etc.).
+* Modular and maintainable architecture, designed to support multiple engines (DataEngine engines, WebSocket clients, etc.).
 * Structured request and response types for robust data handling.
 * Fully asynchronous support for high-performance applications.
 * Easy to integrate into trading bots, analytics pipelines, dashboards, or WebSocket feeds.
@@ -19,9 +19,17 @@ Install HedgeTech SDK via PyPI:
 pip install HedgeTech
 ```
 
+### Updating the Package
+
+To update HedgeTech SDK to the latest version in your environment, use:
+
+```
+pip install --upgrade HedgeTech
+```
+
 ## Usage
 
-The SDK exposes all major clients through the top-level modules, so you generally do **not** need to import internal files like `__AuthAsyncClient` or `__AuthSyncClient` directly.
+The SDK exposes all major clients through the top-level modules, so you generally do **not** need to import internal implementation files directly.
 
 ### Authentication
 
@@ -36,7 +44,7 @@ auth_async_client = await AuthAsyncClient.login(
     UserName_or_Email='<YOUR UserName_or_Email>',
     Password='<YOUR Password>'
 )
-print(auth_client.token)
+print(auth_async_client.token)
 ```
 
 #### Sync Authentication
@@ -45,22 +53,22 @@ print(auth_client.token)
 from HedgeTech.Auth import AuthSyncClient
 
 auth_sync_client = AuthSyncClient.login(
-    UserName_or_Email='<YOUR UserName_or_Email>,
+    UserName_or_Email='<YOUR UserName_or_Email>',
     Password='<YOUR Password>'
 )
-print(auth_client.token)
+print(auth_sync_client.token)
 ```
 
 ### DataEngine / TSE IFB
 
-The DataEngine is structured to support multiple engines. Each engine can have its own async and sync clients, as well as IO types for requests and responses.
+The DataEngine is designed to support multiple engines in a modular way. Each engine provides its own async and sync clients, structured request and response types, and can be integrated with other engines such as WebSocket clients.
 
 #### Async Data Client
 
 ```python
-from HedgeTech.DataEngine import DataEngine_TseIfb_AsyncClient
+from HedgeTech.DataEngine import TSEAsyncClient
 
-client = DataEngine_TseIfb_AsyncClient(auth_async_client)
+client = TSEAsyncClient(auth_async_client)
 data = await client.live_best_limit_by_isin(
     symbol_isins=['IRT1AHRM0001','IRO1IKCO0001']
 )
@@ -70,9 +78,9 @@ print(data)
 #### Sync Data Client
 
 ```python
-from HedgeTech.DataEngine import DataEngine_TseIfb_SyncClient
+from HedgeTech.DataEngine import TSESyncClient
 
-client = DataEngine_TseIfb_SyncClient(auth_sync_client)
+client = TSESyncClient(auth_sync_client)
 data = client.historical_ohlcv_by_name(
     symbolName='مهرگان',
     start_timestamp=0,
@@ -87,19 +95,15 @@ print(data)
 
 ### HedgeTech.Auth
 
-Handles authentication for all HedgeTech clients. The async (`AuthAsyncClient`) and sync (`AuthSyncClient`) versions are exposed through the top-level Auth module.
-
-### HedgeTech.DataEngine.__tse_ifb
-
-Handles interactions with the Tehran Stock Exchange IFB. Includes:
-
-* Async and sync clients for fetching market data.
-* Structured request and response types for robust and predictable data handling.
-* Designed for modular integration with other engines.
+Handles authentication for all HedgeTech clients. The async (`AuthAsyncClient`) and sync (`AuthSyncClient`) clients are exposed through the top-level Auth module.
 
 ### HedgeTech.DataEngine
 
-Top-level module that initializes engines and manages imports for clients. The modular design allows adding new engines such as WebSocket clients or other future DataEngines without changing the main interface.
+Handles interactions with the Tehran Stock Exchange IFB and other engines. Provides:
+
+* Async and sync clients for fetching market data.
+* Structured request and response types for predictable and robust data handling.
+* Modular design that allows integration of additional engines, such as WebSocket clients or future data engines, without modifying the main interface.
 
 ## Contributing
 
