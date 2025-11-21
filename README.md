@@ -32,10 +32,11 @@ The SDK exposes all major clients through the top-level modules, so you generall
 ```python
 from HedgeTech.Auth import AuthAsyncClient
 
-auth_client = AuthAsyncClient(api_key="YOUR_API_KEY", secret="YOUR_SECRET")
-await auth_client.login()
-user_info = await auth_client.get_user_info()
-print(user_info)
+auth_async_client = await AuthAsyncClient.login(
+    UserName_or_Email='<YOUR UserName_or_Email>',
+    Password='<YOUR Password>'
+)
+print(auth_client.token)
 ```
 
 #### Sync Authentication
@@ -43,10 +44,11 @@ print(user_info)
 ```python
 from HedgeTech.Auth import AuthSyncClient
 
-auth_client = AuthSyncClient(api_key="YOUR_API_KEY", secret="YOUR_SECRET")
-auth_client.login()
-user_info = auth_client.get_user_info()
-print(user_info)
+auth_sync_client = AuthSyncClient.login(
+    UserName_or_Email='<YOUR UserName_or_Email>,
+    Password='<YOUR Password>'
+)
+print(auth_client.token)
 ```
 
 ### DataEngine / TSE IFB
@@ -56,32 +58,28 @@ The DataEngine is structured to support multiple engines. Each engine can have i
 #### Async Data Client
 
 ```python
-from HedgeTech.DataEngine.__tse_ifb import TSEAsyncClient
+from HedgeTech.DataEngine import DataEngine_TseIfb_AsyncClient
 
-client = TSEAsyncClient(auth=auth_client)
-data = await client.fetch_market_data(symbol="IRO1ABC0001")
+client = DataEngine_TseIfb_AsyncClient(auth_async_client)
+data = await client.live_best_limit_by_isin(
+    symbol_isins=['IRT1AHRM0001','IRO1IKCO0001']
+)
 print(data)
 ```
 
 #### Sync Data Client
 
 ```python
-from HedgeTech.DataEngine.__tse_ifb import TSESyncClient
+from HedgeTech.DataEngine import DataEngine_TseIfb_SyncClient
 
-client = TSESyncClient(auth=auth_client)
-data = client.fetch_market_data(symbol="IRO1ABC0001")
-print(data)
-```
-
-#### WebSocket Support (Example)
-
-```python
-from HedgeTech.DataEngine import TSEWebSocketClient
-
-ws_client = TSEWebSocketClient(auth=auth_client)
-await ws_client.connect()
-await ws_client.subscribe(symbols=["IRO1ABC0001", "IRO1DEF0002"])
-data = await ws_client.receive()
+client = DataEngine_TseIfb_SyncClient(auth_sync_client)
+data = client.historical_ohlcv_by_name(
+    symbolName='مهرگان',
+    start_timestamp=0,
+    end_timestamp='1763411432',
+    AdjustedPrice=True,
+    Resolution='D'
+)
 print(data)
 ```
 
