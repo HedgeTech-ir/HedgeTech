@@ -4,16 +4,121 @@
 
 from typing import (
     Literal,
-    Union
+    NewType
 )
 from HedgeTech.Auth import AuthSyncClient
 from PIL.Image import open as image_open
 from PIL.ImageFile import ImageFile
 from io import BytesIO
 
+HexUUID = NewType("HexUUID", str)
+
 # ========================================|======================================== #
 #                                 Class Definitions                                 #
 # ========================================|======================================== #
+
+class Order:
+    
+    def __init__(
+        self,
+        *,
+        order_uuid : HexUUID,
+        AuthSyncClient : AuthSyncClient,
+        Order_ValidityType : Literal[
+            'DAY',
+            'GTC', # Good Till Cancelled
+            'GTD', # Good Till Date
+            'FAK', # Fill And Kill
+            'FOK', # Fill Or Kill
+        ] = 'DAY',
+        ValidityDate : int = 0,
+        SymbolNameOrIsin : str,
+        Price : int,
+        Volume :int,
+    ):
+        
+        self.__AuthSyncClient = AuthSyncClient
+        self.__order_uuid = order_uuid
+        self.ValidityType = Order_ValidityType
+        self.ValidityDate = ValidityDate
+        self.SymbolNameOrIsin = SymbolNameOrIsin
+        self.Price = Price
+        self.Volume = Volume
+
+    # +--------------------------------------------------------------------------------------+ #
+    
+    def Edit(
+        self,
+        *,
+        Order_ValidityType : Literal[
+            'DAY',
+            'GTC', # Good Till Cancelled
+            'GTD', # Good Till Date
+            'FAK', # Fill And Kill
+            'FOK', # Fill Or Kill
+        ] = 'DAY',
+        ValidityDate : int = 0,
+        Price : int,
+        Volume :int,
+    )-> None:
+        
+        Edit_response = self.__AuthSyncClient.httpx_Client.patch(
+            url='https://core.hedgetech.ir/ems-engine/tse-ifb/order/edit',
+            data={
+                'order_uuid' : self.__order_uuid,
+                'Order_ValidityType' : Order_ValidityType,
+                'ValidityDate' : ValidityDate,
+                'Price' : Price,
+                'Volume' : Volume
+            }
+        )
+        
+        
+        match Edit_response.status_code:
+            
+            case 200:
+                
+                Edit_response = Edit_response.json()
+                
+                self.__order_uuid = Edit_response['Data']['order_uuid']
+                self.ValidityType = Edit_response['Data']['order_validity_type']
+                self.ValidityDate = ValidityDate
+                self.Price = Edit_response['Data']['order_price']
+                self.Volume = Edit_response['Data']['order_volume']
+                
+            case 400:
+                
+                raise ValueError(Edit_response.json()['detail']['Status']['Description']['en'])
+                
+            case _ :
+                
+                raise ValueError(Edit_response.text)
+        
+        
+    # +--------------------------------------------------------------------------------------+ #
+    
+    def Status(
+        self,
+        
+    ):
+        ...
+    
+    # +--------------------------------------------------------------------------------------+ #
+    
+    @property
+    def Delete(self)-> bool :
+        
+        Delete_respnse =  self.__AuthSyncClient.httpx_Client.delete(
+            url= 'https://core.hedgetech.ir/ems-engine/tse-ifb/order/delete',
+            params={'order_uuid' : self.__order_uuid}
+        )
+        
+        if Delete_respnse.status_code == 200 : return True
+        else : return False
+        
+    
+            
+# ========================================_======================================== #
 
 class EmsEngine_TseIfb_SyncClient:
     
@@ -27,16 +132,18 @@ class EmsEngine_TseIfb_SyncClient:
         
         self.Customer_FullName : str | None = None
         self.Customer_TSEBourseCode : str | None = None
-        self.oms_session : str | None = None
+        self.oms_session : HexUUID | None = None
         
-        
+    
+    # +--------------------------------------------------------------------------------------+ #
+    
     def Get_Captcha(
         self,
         OMS : Literal[
             'Omex | Parsian',
             'Sahra | Karamad',
         ]
-    )-> Union[ImageFile,None] :
+    )-> ImageFile:
         
         Captcha = self.__AuthSyncClient.httpx_Client.get(
             url='https://core.hedgetech.ir/ems-engine/tse-ifb/oms/login',
@@ -44,44 +151,272 @@ class EmsEngine_TseIfb_SyncClient:
         )
         
         if Captcha.status_code == 200: return image_open(BytesIO(Captcha.content))
-    
-        else : return None
-    
-    
-    def OmsLogin(
+        
+        else : raise ValueError(Captcha.json()['detail']['Status']['Description']['en'])
+
+    # +--------------------------------------------------------------------------------------+ #
+            
+    def oms_login(
         self,
         username: str,
-        Password: str,
-        Captcha_Value : str
-    )-> None :
-        
-        login_response = self.__AuthSyncClient.httpx_Client.post(
+        password: str,
+        captcha_value: str,
+    ) -> None :
+
+        response = self.__AuthSyncClient.httpx_Client.post(
             url='https://core.hedgetech.ir/ems-engine/tse-ifb/oms/login',
             data={
                 'username' : username,
-                'Password' : Password,
-                'Captcha_Value' : Captcha_Value
+                'Password' : password,
+                'Captcha_Value' : captcha_value
+            },
+        )
+        
+        match response.status_code :
+            
+            case 200 :
+                
+                data = response.json()
+
+                self.Customer_FullName = data['Data']['Customer_FullName']
+                self.Customer_TSEBourseCode = data['Data']['Customer_TSEBourseCode']
+                self.oms_session = data['Data']['oms_session']
+
+                return None
+                
+            case 400 :
+                
+                raise ValueError(response.json()['detail']['Status']['Description']['en'])
+
+            case _ :
+                
+                raise ValueError(response.text)
+
+
+
+    # +--------------------------------------------------------------------------------------+ #
+    
+    
+    def Buy_by_Name(
+        self,
+        *,
+        Order_ValidityType : Literal[
+            'DAY',
+            'GTC', # Good Till Cancelled
+            'GTD', # Good Till Date
+            'FAK', # Fill And Kill
+            'FOK', # Fill Or Kill
+        ] = 'DAY',
+        ValidityDate : int = 0,
+        symbolName : str,
+        Price : int,
+        Volume :int,
+    )-> Order:
+        
+        order_response = self.__AuthSyncClient.httpx_Client.post(
+            url='https://core.hedgetech.ir/ems-engine/tse-ifb/order/new/buy/name',
+            data={
+                'oms_session' : self.oms_session,
+                'Order_ValidityType' : Order_ValidityType,
+                'ValidityDate' : ValidityDate,
+                'symbolName' : symbolName,
+                'Price' : Price,
+                'Volume' : Volume
             }
         )
         
-    
-        if login_response.status_code == 200:
+        match order_response.status_code:
             
-            login_response = login_response.json()
             
-            print(login_response['Status']['Description']['en'])
-            
-            self.Customer_FullName = login_response['Data']['Customer_FullName']
-            self.Customer_TSEBourseCode = login_response['Data']['Customer_TSEBourseCode']
-            self.oms_session = login_response['Data']['oms_session']
-            
-            return login_response
-        
-        else :
-            
-            if login_response.status_code == 400:
+            case 200:
                 
-                raise ValueError(login_response.json()['detail']['Status']['Description']['en'])
+                order_response = order_response.json()
+                
+                return Order(
+                    order_uuid=order_response['Data']['order_uuid'],
+                    AuthSyncClient=self.__AuthSyncClient,
+                    Order_ValidityType=Order_ValidityType,
+                    ValidityDate=ValidityDate,
+                    SymbolNameOrIsin = symbolName,
+                    Price=Price,
+                    Volume=Volume
+                )
+                
+            case 400:
+                
+                raise ValueError(order_response.json()['detail']['Status']['Description']['en'])
+                
+            case _ :
+                
+                raise ValueError(order_response.text)
+                        
 
-            else : raise ValueError(login_response.text)
-                    
+    # +--------------------------------------------------------------------------------------+ #
+    
+    
+    def Sell_by_Name(
+        self,
+        *,
+        Order_ValidityType : Literal[
+            'DAY',
+            'GTC', # Good Till Cancelled
+            'GTD', # Good Till Date
+            'FAK', # Fill And Kill
+            'FOK', # Fill Or Kill
+        ] = 'DAY',
+        ValidityDate : int = 0,
+        symbolName : str,
+        Price : int,
+        Volume :int,
+    )-> Order:
+        
+        order_response = self.__AuthSyncClient.httpx_Client.post(
+            url='https://core.hedgetech.ir/ems-engine/tse-ifb/order/new/sell/name',
+            data={
+                'oms_session' : self.oms_session,
+                'Order_ValidityType' : Order_ValidityType,
+                'ValidityDate' : ValidityDate,
+                'symbolName' : symbolName,
+                'Price' : Price,
+                'Volume' : Volume
+            }
+        )
+        
+        match order_response.status_code:
+            
+            
+            case 200:
+                
+                order_response = order_response.json()
+                
+                return Order(
+                    order_uuid=order_response['Data']['order_uuid'],
+                    AuthSyncClient=self.__AuthSyncClient,
+                    Order_ValidityType=Order_ValidityType,
+                    ValidityDate=ValidityDate,
+                    SymbolNameOrIsin = symbolName,
+                    Price=Price,
+                    Volume=Volume
+                )
+                
+            case 400:
+                
+                raise ValueError(order_response.json()['detail']['Status']['Description']['en'])
+                
+            case _ :
+                
+                raise ValueError(order_response.text)
+        
+    # +--------------------------------------------------------------------------------------+ #
+
+    def Buy_by_isin(
+        self,
+        *,
+        Order_ValidityType : Literal[
+            'DAY',
+            'GTC', # Good Till Cancelled
+            'GTD', # Good Till Date
+            'FAK', # Fill And Kill
+            'FOK', # Fill Or Kill
+        ] = 'DAY',
+        ValidityDate : int = 0,
+        symbolIsin : str,
+        Price : int,
+        Volume :int,
+    )-> Order:
+        
+        order_response = self.__AuthSyncClient.httpx_Client.post(
+            url='https://core.hedgetech.ir/ems-engine/tse-ifb/order/new/buy/isin',
+            data={
+                'oms_session' : self.oms_session,
+                'Order_ValidityType' : Order_ValidityType,
+                'ValidityDate' : ValidityDate,
+                'symbolIsin' : symbolIsin,
+                'Price' : Price,
+                'Volume' : Volume
+            }
+        )
+        
+        match order_response.status_code:
+            
+            
+            case 200:
+                
+                order_response = order_response.json()
+                
+                return Order(
+                    order_uuid=order_response['Data']['order_uuid'],
+                    AuthSyncClient=self.__AuthSyncClient,
+                    Order_ValidityType=Order_ValidityType,
+                    ValidityDate=ValidityDate,
+                    SymbolNameOrIsin = symbolIsin,
+                    Price=Price,
+                    Volume=Volume
+                )
+                
+            case 400:
+                
+                raise ValueError(order_response.json()['detail']['Status']['Description']['en'])
+                
+            case _ :
+                
+                raise ValueError(order_response.text)
+        
+        
+    # +--------------------------------------------------------------------------------------+ #
+    
+    def Sell_by_isin(
+        self,
+        *,
+        Order_ValidityType : Literal[
+            'DAY',
+            'GTC', # Good Till Cancelled
+            'GTD', # Good Till Date
+            'FAK', # Fill And Kill
+            'FOK', # Fill Or Kill
+        ] = 'DAY',
+        ValidityDate : int = 0,
+        symbolIsin : str,
+        Price : int,
+        Volume :int,
+    )-> Order:
+        
+        order_response = self.__AuthSyncClient.httpx_Client.post(
+            url='https://core.hedgetech.ir/ems-engine/tse-ifb/order/new/sell/isin',
+            data={
+                'oms_session' : self.oms_session,
+                'Order_ValidityType' : Order_ValidityType,
+                'ValidityDate' : ValidityDate,
+                'symbolIsin' : symbolIsin,
+                'Price' : Price,
+                'Volume' : Volume
+            }
+        )
+        
+        match order_response.status_code:
+            
+            
+            case 200:
+                
+                order_response = order_response.json()
+                
+                return Order(
+                    order_uuid=order_response['Data']['order_uuid'],
+                    AuthSyncClient=self.__AuthSyncClient,
+                    Order_ValidityType=Order_ValidityType,
+                    ValidityDate=ValidityDate,
+                    SymbolNameOrIsin = symbolIsin,
+                    Price=Price,
+                    Volume=Volume
+                )
+                
+            case 400:
+                
+                raise ValueError(order_response.json()['detail']['Status']['Description']['en'])
+                
+            case _ :
+                
+                raise ValueError(order_response.text)
+        
+    # +--------------------------------------------------------------------------------------+ #
+            
