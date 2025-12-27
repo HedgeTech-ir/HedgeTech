@@ -38,12 +38,14 @@ class Order:
     ):
         
         self.__AuthSyncClient = AuthSyncClient
-        self.__order_uuid = order_uuid
-        self.ValidityType = Order_ValidityType
-        self.ValidityDate = ValidityDate
-        self.SymbolNameOrIsin = SymbolNameOrIsin
-        self.Price = Price
-        self.Volume = Volume
+        self.__order_uuid : HexUUID = order_uuid
+        self.ValidityType : str = Order_ValidityType
+        self.ValidityDate : int = ValidityDate
+        self.SymbolNameOrIsin : str = SymbolNameOrIsin
+        self.Price : int = Price 
+        self.Volume : int = Volume
+        self.is_deleted : bool = False
+        
 
     # +--------------------------------------------------------------------------------------+ #
     
@@ -113,9 +115,20 @@ class Order:
             params={'order_uuid' : self.__order_uuid}
         )
         
-        if Delete_respnse.status_code == 200 : return True
-        else : return False
+
+        match Delete_respnse.status_code :
+            
+            case 200:
+                
+                self.is_deleted = True
+                
+            case 400:
+                
+                raise ValueError(Delete_respnse.json()['detail']['Status']['Description']['en'])
         
+            case _ :
+                
+                raise ValueError(Delete_respnse.text)
     
             
 # ========================================_======================================== #
