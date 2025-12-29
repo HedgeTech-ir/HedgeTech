@@ -1,2 +1,4 @@
-from .__SyncClient import EmsEngine_TseIfb_SyncClient
-from .__AsyncClient import EmsEngine_TseIfb_ASyncClient
+from .__tse_ifb import (
+    EmsEngine_TseIfb_SyncClient,
+    EmsEngine_TseIfb_ASyncClient
+)

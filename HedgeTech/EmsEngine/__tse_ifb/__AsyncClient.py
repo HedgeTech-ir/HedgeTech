@@ -4,26 +4,26 @@
 
 from typing import (
     Literal,
-    NewType
 )
-from HedgeTech.Auth import AuthSyncClient
+from .__io_types import (
+    HexUUID,
+    OrderStatus,
+)
+from HedgeTech.Auth import AuthAsyncClient
 from PIL.Image import open as image_open
 from PIL.ImageFile import ImageFile
 from io import BytesIO
 
-HexUUID = NewType("HexUUID", str)
-
 # ========================================|======================================== #
 #                                 Class Definitions                                 #
 # ========================================|======================================== #
-
 class Order:
     
     def __init__(
         self,
         *,
         order_uuid : HexUUID,
-        AuthSyncClient : AuthSyncClient,
+        AuthASyncClient : AuthAsyncClient,
         Order_ValidityType : Literal[
             'DAY',
             'GTC', # Good Till Cancelled
@@ -37,7 +37,7 @@ class Order:
         Volume :int,
     ):
         
-        self.__AuthSyncClient = AuthSyncClient
+        self.__AuthASyncClient = AuthASyncClient
         self.__order_uuid : HexUUID = order_uuid
         self.ValidityType : str = Order_ValidityType
         self.ValidityDate : int = ValidityDate
@@ -49,7 +49,7 @@ class Order:
 
     # +--------------------------------------------------------------------------------------+ #
     
-    def Edit(
+    async def Edit(
         self,
         *,
         Order_ValidityType : Literal[
@@ -64,7 +64,7 @@ class Order:
         Volume :int,
     )-> None:
         
-        Edit_response = self.__AuthSyncClient.httpx_Client.patch(
+        Edit_response = await self.__AuthASyncClient.httpx_Client.patch(
             url='https://core.hedgetech.ir/ems-engine/tse-ifb/order/edit',
             data={
                 'order_uuid' : self.__order_uuid,
@@ -95,22 +95,51 @@ class Order:
             case _ :
                 
                 raise ValueError(Edit_response.text)
+            
+    # +--------------------------------------------------------------------------------------+ #
+    @property
+    async def Status(self)-> OrderStatus:
         
+        status_respnse = await self.__AuthASyncClient.httpx_Client.get(
+            url='https://core.hedgetech.ir/ems-engine/tse-ifb/order/status',
+            params={'order_uuid' : self.__order_uuid}
+        )
         
+        match status_respnse.status_code :
+            
+            case 200:
+                
+                return status_respnse.json()['Data']
+                
+            case 400:
+                
+                raise ValueError(status_respnse.json()['detail']['Status']['Description']['en'])
+
+            case _ :
+                
+                raise ValueError(status_respnse.text)
+            
     # +--------------------------------------------------------------------------------------+ #
     
-    def Status(
-        self,
+    @property
+    async def order_is_valid(self)-> bool:
         
-    ):
-        ...
+        status = await self.Status
+        
+        if (status['Price'] == self.Price) and (
+            status['Volume'] == self.Volume
+        ) and (status['ValidityType'] == self.ValidityType) and status['OrderInQueue']:
+            
+            return True
+        
+        else : return False
     
     # +--------------------------------------------------------------------------------------+ #
     
     @property
-    def Delete(self)-> bool :
+    async def Delete(self)-> bool :
         
-        Delete_respnse =  self.__AuthSyncClient.httpx_Client.delete(
+        Delete_respnse =  await self.__AuthASyncClient.httpx_Client.delete(
             url= 'https://core.hedgetech.ir/ems-engine/tse-ifb/order/delete',
             params={'order_uuid' : self.__order_uuid}
         )
@@ -130,27 +159,27 @@ class Order:
                 
                 raise ValueError(Delete_respnse.text)
     
-            
+
 # ================================================================================= #
 
-class EmsEngine_TseIfb_SyncClient:
+class EmsEngine_TseIfb_ASyncClient:
     
     def __init__(
         self,
-        AuthSyncClient : AuthSyncClient,
+        AuthASyncClient : AuthAsyncClient,
     ):
         
         
-        self.__AuthSyncClient = AuthSyncClient
+        self.__AuthASyncClient = AuthASyncClient
         
         self.Customer_FullName : str | None = None
         self.Customer_TSEBourseCode : str | None = None
-        self.oms_session : HexUUID | None = None
+        self.oms_session : str | None = None
         
-    
     # +--------------------------------------------------------------------------------------+ #
     
-    def Get_Captcha(
+    
+    async def Get_Captcha(
         self,
         OMS : Literal[
             'Omex | Parsian',
@@ -158,7 +187,7 @@ class EmsEngine_TseIfb_SyncClient:
         ]
     )-> ImageFile:
         
-        Captcha = self.__AuthSyncClient.httpx_Client.get(
+        Captcha = await self.__AuthASyncClient.httpx_Client.get(
             url='https://core.hedgetech.ir/ems-engine/tse-ifb/oms/login',
             params={'oms' : OMS }
         )
@@ -166,17 +195,18 @@ class EmsEngine_TseIfb_SyncClient:
         if Captcha.status_code == 200: return image_open(BytesIO(Captcha.content))
         
         else : raise ValueError(Captcha.json()['detail']['Status']['Description']['en'])
-
+    
+    
     # +--------------------------------------------------------------------------------------+ #
-            
-    def oms_login(
+    
+    async def oms_login(
         self,
         username: str,
         password: str,
         captcha_value: str,
     ) -> None :
 
-        response = self.__AuthSyncClient.httpx_Client.post(
+        response = await self.__AuthASyncClient.httpx_Client.post(
             url='https://core.hedgetech.ir/ems-engine/tse-ifb/oms/login',
             data={
                 'username' : username,
@@ -204,13 +234,11 @@ class EmsEngine_TseIfb_SyncClient:
             case _ :
                 
                 raise ValueError(response.text)
-
-
-
+            
     # +--------------------------------------------------------------------------------------+ #
     
     
-    def Buy_by_Name(
+    async def Buy_by_Name(
         self,
         *,
         Order_ValidityType : Literal[
@@ -226,7 +254,7 @@ class EmsEngine_TseIfb_SyncClient:
         Volume :int,
     )-> Order:
         
-        order_response = self.__AuthSyncClient.httpx_Client.post(
+        order_response = await self.__AuthASyncClient.httpx_Client.post(
             url='https://core.hedgetech.ir/ems-engine/tse-ifb/order/new/buy/name',
             data={
                 'oms_session' : self.oms_session,
@@ -247,7 +275,7 @@ class EmsEngine_TseIfb_SyncClient:
                 
                 return Order(
                     order_uuid=order_response['Data']['order_uuid'],
-                    AuthSyncClient=self.__AuthSyncClient,
+                    AuthSyncClient=self.__AuthASyncClient,
                     Order_ValidityType=Order_ValidityType,
                     ValidityDate=ValidityDate,
                     SymbolNameOrIsin = symbolName,
@@ -267,7 +295,7 @@ class EmsEngine_TseIfb_SyncClient:
     # +--------------------------------------------------------------------------------------+ #
     
     
-    def Sell_by_Name(
+    async def Sell_by_Name(
         self,
         *,
         Order_ValidityType : Literal[
@@ -283,7 +311,7 @@ class EmsEngine_TseIfb_SyncClient:
         Volume :int,
     )-> Order:
         
-        order_response = self.__AuthSyncClient.httpx_Client.post(
+        order_response = await self.__AuthASyncClient.httpx_Client.post(
             url='https://core.hedgetech.ir/ems-engine/tse-ifb/order/new/sell/name',
             data={
                 'oms_session' : self.oms_session,
@@ -304,7 +332,7 @@ class EmsEngine_TseIfb_SyncClient:
                 
                 return Order(
                     order_uuid=order_response['Data']['order_uuid'],
-                    AuthSyncClient=self.__AuthSyncClient,
+                    AuthSyncClient=self.__AuthASyncClient,
                     Order_ValidityType=Order_ValidityType,
                     ValidityDate=ValidityDate,
                     SymbolNameOrIsin = symbolName,
@@ -322,7 +350,7 @@ class EmsEngine_TseIfb_SyncClient:
         
     # +--------------------------------------------------------------------------------------+ #
 
-    def Buy_by_isin(
+    async def Buy_by_isin(
         self,
         *,
         Order_ValidityType : Literal[
@@ -338,7 +366,7 @@ class EmsEngine_TseIfb_SyncClient:
         Volume :int,
     )-> Order:
         
-        order_response = self.__AuthSyncClient.httpx_Client.post(
+        order_response = await self.__AuthASyncClient.httpx_Client.post(
             url='https://core.hedgetech.ir/ems-engine/tse-ifb/order/new/buy/isin',
             data={
                 'oms_session' : self.oms_session,
@@ -359,7 +387,7 @@ class EmsEngine_TseIfb_SyncClient:
                 
                 return Order(
                     order_uuid=order_response['Data']['order_uuid'],
-                    AuthSyncClient=self.__AuthSyncClient,
+                    AuthSyncClient=self.__AuthASyncClient,
                     Order_ValidityType=Order_ValidityType,
                     ValidityDate=ValidityDate,
                     SymbolNameOrIsin = symbolIsin,
@@ -378,7 +406,7 @@ class EmsEngine_TseIfb_SyncClient:
         
     # +--------------------------------------------------------------------------------------+ #
     
-    def Sell_by_isin(
+    async def Sell_by_isin(
         self,
         *,
         Order_ValidityType : Literal[
@@ -394,7 +422,7 @@ class EmsEngine_TseIfb_SyncClient:
         Volume :int,
     )-> Order:
         
-        order_response = self.__AuthSyncClient.httpx_Client.post(
+        order_response = await self.__AuthASyncClient.httpx_Client.post(
             url='https://core.hedgetech.ir/ems-engine/tse-ifb/order/new/sell/isin',
             data={
                 'oms_session' : self.oms_session,
@@ -415,7 +443,7 @@ class EmsEngine_TseIfb_SyncClient:
                 
                 return Order(
                     order_uuid=order_response['Data']['order_uuid'],
-                    AuthSyncClient=self.__AuthSyncClient,
+                    AuthSyncClient=self.__AuthASyncClient,
                     Order_ValidityType=Order_ValidityType,
                     ValidityDate=ValidityDate,
                     SymbolNameOrIsin = symbolIsin,
