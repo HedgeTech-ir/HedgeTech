@@ -119,20 +119,6 @@ class Order:
                 
                 raise ValueError(status_respnse.text)
             
-    # +--------------------------------------------------------------------------------------+ #
-    
-    @property
-    async def order_is_valid(self)-> bool:
-        
-        status = await self.Status
-        
-        if (status['Price'] == self.Price) and (
-            status['Volume'] == self.Volume
-        ) and (status['ValidityType'] == self.ValidityType) and status['OrderInQueue']:
-            
-            return True
-        
-        else : return False
     
     # +--------------------------------------------------------------------------------------+ #
     
@@ -275,7 +261,7 @@ class EmsEngine_TseIfb_ASyncClient:
                 
                 return Order(
                     order_uuid=order_response['Data']['order_uuid'],
-                    AuthSyncClient=self.__AuthASyncClient,
+                    AuthASyncClient=self.__AuthASyncClient,
                     Order_ValidityType=Order_ValidityType,
                     ValidityDate=ValidityDate,
                     SymbolNameOrIsin = symbolName,
@@ -332,7 +318,7 @@ class EmsEngine_TseIfb_ASyncClient:
                 
                 return Order(
                     order_uuid=order_response['Data']['order_uuid'],
-                    AuthSyncClient=self.__AuthASyncClient,
+                    AuthASyncClient=self.__AuthASyncClient,
                     Order_ValidityType=Order_ValidityType,
                     ValidityDate=ValidityDate,
                     SymbolNameOrIsin = symbolName,
@@ -387,7 +373,7 @@ class EmsEngine_TseIfb_ASyncClient:
                 
                 return Order(
                     order_uuid=order_response['Data']['order_uuid'],
-                    AuthSyncClient=self.__AuthASyncClient,
+                    AuthASyncClient=self.__AuthASyncClient,
                     Order_ValidityType=Order_ValidityType,
                     ValidityDate=ValidityDate,
                     SymbolNameOrIsin = symbolIsin,
@@ -443,7 +429,7 @@ class EmsEngine_TseIfb_ASyncClient:
                 
                 return Order(
                     order_uuid=order_response['Data']['order_uuid'],
-                    AuthSyncClient=self.__AuthASyncClient,
+                    AuthASyncClient=self.__AuthASyncClient,
                     Order_ValidityType=Order_ValidityType,
                     ValidityDate=ValidityDate,
                     SymbolNameOrIsin = symbolIsin,
