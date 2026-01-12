@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "HedgeTech"
-version = "0.2.0b1"
+version = "0.2.1b1"
 description = "A unified, high-performance API layer that powers all trading infrastructure across the HedgeTech ecosystem, providing modular, scalable, and real-time interfaces for market data, order management, and execution systems."
 readme = "README.md"
 requires-python = ">=3.10"
