@@ -121,21 +121,6 @@ class Order:
             case _ :
                 
                 raise ValueError(status_respnse.text)
-            
-    # +--------------------------------------------------------------------------------------+ #
-    
-    @property
-    def order_is_valid(self)-> bool:
-        
-        status = self.Status
-        
-        if (status['Price'] == self.Price) and (
-            status['Volume'] == self.Volume
-        ) and (status['ValidityType'] == self.ValidityType) and status['OrderInQueue']:
-            
-            return True
-        
-        else : return False
         
     # +--------------------------------------------------------------------------------------+ #
     
