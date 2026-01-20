@@ -2,6 +2,7 @@
 #                                      Imports                                      #
 # ========================================|======================================== #
 
+from .__utils import RetriableAsyncClient
 from httpx import (
     AsyncClient ,
     Timeout ,
@@ -126,20 +127,23 @@ class AuthAsyncClient:
             headers = {'origin'  : 'https://core.hedgetech.ir'}
             headers.update(token)
             
-            httpx_Client = AsyncClient(
-                verify=True ,
-                http1=False ,
-                http2=True ,
-                headers=headers,
-                cookies=httpx_Client.cookies,
-                timeout=Timeout(
-                    connect=.5,
-                    read=1,
-                    write=1,
-                    pool=.5,
+            httpx_Client = RetriableAsyncClient(
+                client = AsyncClient(
+                    verify=True ,
+                    http1=False ,
+                    http2=True ,
+                    headers=headers,
+                    cookies=httpx_Client.cookies,
+                    timeout=Timeout(
+                        connect=.250,
+                        read=1.5,
+                        write=1.5,
+                        pool=.250,
+                    ),
                 ),
+                retries= 10
             )
-            
+                        
             return cls(
                 httpx_Client = httpx_Client,
                 token = token

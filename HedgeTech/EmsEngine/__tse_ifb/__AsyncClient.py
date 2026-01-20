@@ -148,7 +148,7 @@ class Order:
 
 # ================================================================================= #
 
-class EmsEngine_TseIfb_ASyncClient:
+class EmsEngine_TseIfb_AsyncClient:
     
     def __init__(
         self,
