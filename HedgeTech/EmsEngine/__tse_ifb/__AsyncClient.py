@@ -35,6 +35,9 @@ class Order:
         *,
         SendOrder_RequestInfo : dict,
         AuthASyncClient : AuthAsyncClient,
+        SymbolNameOrIsin : str,
+        Price : int,
+        Volume :int,
         Order_ValidityType : Literal[
             'DAY',
             'GTC', # Good Till Cancelled
@@ -43,9 +46,6 @@ class Order:
             'FOK', # Fill Or Kill
         ] = 'DAY',
         ValidityDate : int = 0,
-        SymbolNameOrIsin : str,
-        Price : int,
-        Volume :int,
     ):
 
         """
@@ -137,6 +137,8 @@ class Order:
     async def Edit(
         self,
         *,
+        Price : int,
+        Volume :int,
         Order_ValidityType : Literal[
             'DAY',
             'GTC', # Good Till Cancelled
@@ -145,8 +147,6 @@ class Order:
             'FOK', # Fill Or Kill
         ] = 'DAY',
         ValidityDate : int = 0,
-        Price : int,
-        Volume :int,
     )-> None:
         
         """
@@ -473,6 +473,9 @@ class EmsEngine_TseIfb_AsyncClient:
     async def Buy_by_Name(
         self,
         *,
+        symbolName : str,
+        Price : int,
+        Volume :int,
         Order_ValidityType : Literal[
             'DAY',
             'GTC', # Good Till Cancelled
@@ -481,9 +484,6 @@ class EmsEngine_TseIfb_AsyncClient:
             'FOK', # Fill Or Kill
         ] = 'DAY',
         ValidityDate : int = 0,
-        symbolName : str,
-        Price : int,
-        Volume :int,
     )-> Order | None:
         
         """
@@ -545,6 +545,9 @@ class EmsEngine_TseIfb_AsyncClient:
     async def Sell_by_Name(
         self,
         *,
+        symbolName : str,
+        Price : int,
+        Volume :int,
         Order_ValidityType : Literal[
             'DAY',
             'GTC', # Good Till Cancelled
@@ -553,9 +556,6 @@ class EmsEngine_TseIfb_AsyncClient:
             'FOK', # Fill Or Kill
         ] = 'DAY',
         ValidityDate : int = 0,
-        symbolName : str,
-        Price : int,
-        Volume :int,
     )-> Order | None:
         
         """
@@ -616,6 +616,9 @@ class EmsEngine_TseIfb_AsyncClient:
     async def Buy_by_isin(
         self,
         *,
+        symbolIsin : str,
+        Price : int,
+        Volume :int,
         Order_ValidityType : Literal[
             'DAY',
             'GTC', # Good Till Cancelled
@@ -624,9 +627,6 @@ class EmsEngine_TseIfb_AsyncClient:
             'FOK', # Fill Or Kill
         ] = 'DAY',
         ValidityDate : int = 0,
-        symbolIsin : str,
-        Price : int,
-        Volume :int,
     )-> Order | None:
         
         """
@@ -687,6 +687,9 @@ class EmsEngine_TseIfb_AsyncClient:
     async def Sell_by_isin(
         self,
         *,
+        symbolIsin : str,
+        Price : int,
+        Volume :int,
         Order_ValidityType : Literal[
             'DAY',
             'GTC', # Good Till Cancelled
@@ -695,9 +698,6 @@ class EmsEngine_TseIfb_AsyncClient:
             'FOK', # Fill Or Kill
         ] = 'DAY',
         ValidityDate : int = 0,
-        symbolIsin : str,
-        Price : int,
-        Volume :int,
     )-> Order | None:
         
         """

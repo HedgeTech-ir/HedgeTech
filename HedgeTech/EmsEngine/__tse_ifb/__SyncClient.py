@@ -35,6 +35,10 @@ class Order:
         *,
         SendOrder_RequestInfo : dict,
         AuthSyncClient : AuthSyncClient,
+        SymbolNameOrIsin : str,
+        Price : int,
+        Volume :int,
+        ValidityDate : int = 0,
         Order_ValidityType : Literal[
             'DAY',
             'GTC', # Good Till Cancelled
@@ -42,10 +46,6 @@ class Order:
             'FAK', # Fill And Kill
             'FOK', # Fill Or Kill
         ] = 'DAY',
-        ValidityDate : int = 0,
-        SymbolNameOrIsin : str,
-        Price : int,
-        Volume :int,
     ):
         
         """
@@ -142,6 +142,8 @@ class Order:
     def Edit(
         self,
         *,
+        Price : int,
+        Volume :int,
         Order_ValidityType : Literal[
             'DAY',
             'GTC', # Good Till Cancelled
@@ -150,8 +152,6 @@ class Order:
             'FOK', # Fill Or Kill
         ] = 'DAY',
         ValidityDate : int = 0,
-        Price : int,
-        Volume :int,
     )-> None:
         
         """
@@ -505,6 +505,9 @@ class EmsEngine_TseIfb_SyncClient:
     def Buy_by_Name(
         self,
         *,
+        symbolName : str,
+        Price : int,
+        Volume :int,
         Order_ValidityType : Literal[
             'DAY',
             'GTC', # Good Till Cancelled
@@ -513,9 +516,6 @@ class EmsEngine_TseIfb_SyncClient:
             'FOK', # Fill Or Kill
         ] = 'DAY',
         ValidityDate : int = 0,
-        symbolName : str,
-        Price : int,
-        Volume :int,
     )-> Order | None:
         
         """
@@ -578,6 +578,9 @@ class EmsEngine_TseIfb_SyncClient:
     def Sell_by_Name(
         self,
         *,
+        symbolName : str,
+        Price : int,
+        Volume :int,
         Order_ValidityType : Literal[
             'DAY',
             'GTC', # Good Till Cancelled
@@ -586,9 +589,6 @@ class EmsEngine_TseIfb_SyncClient:
             'FOK', # Fill Or Kill
         ] = 'DAY',
         ValidityDate : int = 0,
-        symbolName : str,
-        Price : int,
-        Volume :int,
     )-> Order | None:
         
         """
@@ -649,6 +649,9 @@ class EmsEngine_TseIfb_SyncClient:
     def Buy_by_isin(
         self,
         *,
+        symbolIsin : str,
+        Price : int,
+        Volume :int,
         Order_ValidityType : Literal[
             'DAY',
             'GTC', # Good Till Cancelled
@@ -657,9 +660,6 @@ class EmsEngine_TseIfb_SyncClient:
             'FOK', # Fill Or Kill
         ] = 'DAY',
         ValidityDate : int = 0,
-        symbolIsin : str,
-        Price : int,
-        Volume :int,
     )-> Order | None:
         
         """
@@ -720,6 +720,9 @@ class EmsEngine_TseIfb_SyncClient:
     def Sell_by_isin(
         self,
         *,
+        symbolIsin : str,
+        Price : int,
+        Volume :int,
         Order_ValidityType : Literal[
             'DAY',
             'GTC', # Good Till Cancelled
@@ -728,9 +731,6 @@ class EmsEngine_TseIfb_SyncClient:
             'FOK', # Fill Or Kill
         ] = 'DAY',
         ValidityDate : int = 0,
-        symbolIsin : str,
-        Price : int,
-        Volume :int,
     )-> Order | None:
         
         """
