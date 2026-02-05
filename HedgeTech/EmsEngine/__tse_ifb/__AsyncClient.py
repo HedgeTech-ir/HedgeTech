@@ -169,7 +169,12 @@ class Order:
 
         Example
         -------
-        >>> await order.Edit(Price=105, Volume=15)
+        >>> await order.Edit(
+            Price = 105,
+            Volume = 15,
+            Order_ValidityType = 'GTD',
+            ValidityDate = 20271206
+        )
         """
         
         if self.OrderId is not None: 
@@ -405,6 +410,7 @@ class EmsEngine_TseIfb_AsyncClient:
     
     async def oms_login(
         self,
+        *,
         username: str,
         password: str,
         captcha_value: str,
@@ -433,7 +439,11 @@ class EmsEngine_TseIfb_AsyncClient:
 
         Example
         -------
-        >>> await client.oms_login("user123", "pass123", "abcd")
+        >>> await client.oms_login(
+            username = "user123",
+            password = "pass123",
+            captcha_value = "abcd"
+        )
         >>> print(client.oms_session)
         'session_token_here'
         """
@@ -509,7 +519,13 @@ class EmsEngine_TseIfb_AsyncClient:
 
         Example
         -------
-        >>> order = await client.Buy_by_Name(symbolName="اطلس", Price=100000, Volume=10)
+        >>> order = await client.Buy_by_Name(
+            symbolName="اطلس",
+            Price=100000,
+            Volume=10,
+            Order_ValidityType = 'DAY',
+            ValidityDate = 0
+        )
         >>> await order.send()
         """
         
@@ -581,7 +597,13 @@ class EmsEngine_TseIfb_AsyncClient:
 
         Example
         -------
-        >>> order = await client.Sell_by_Name(symbolName="اطلس", Price=100000, Volume=10)
+        >>> order = await client.Sell_by_Name(
+            symbolName="اطلس",
+            Price=100000,
+            Volume=10,
+            Order_ValidityType = 'DAY',
+            ValidityDate = 0
+        )
         >>> await order.send()
         """
         
@@ -652,7 +674,13 @@ class EmsEngine_TseIfb_AsyncClient:
 
         Example
         -------
-        >>> order = await client.Buy_by_isin(symbolIsin="اطلس", Price=100000, Volume=10)
+        >>> order = await client.Buy_by_isin(
+            symbolName="اطلس",
+            Price=100000,
+            Volume=10,
+            Order_ValidityType = 'DAY',
+            ValidityDate = 0
+        )
         >>> await order.send()
         """
         
@@ -723,7 +751,13 @@ class EmsEngine_TseIfb_AsyncClient:
 
         Example
         -------
-        >>> order = await client.Sell_by_isin(symbolIsin="اطلس", Price=100000, Volume=10)
+        >>> order = await client.Sell_by_isin(
+            symbolName="اطلس",
+            Price=100000,
+            Volume=10,
+            Order_ValidityType = 'DAY',
+            ValidityDate = 0
+        )
         >>> await order.send()
         """
         

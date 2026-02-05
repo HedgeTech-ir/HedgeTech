@@ -181,7 +181,12 @@ class Order:
 
         Examples
         --------
-        >>> order.Edit(Price=12500, Volume=800)
+        >>> order.Edit(
+            Price = 105,
+            Volume = 15,
+            Order_ValidityType = 'GTD',
+            ValidityDate = 20271206
+        )
         """
         
         if self.OrderId is not None: 
@@ -436,6 +441,7 @@ class EmsEngine_TseIfb_SyncClient:
             
     def oms_login(
         self,
+        *,
         username: str,
         password: str,
         captcha_value: str,
@@ -465,7 +471,11 @@ class EmsEngine_TseIfb_SyncClient:
 
         Examples
         --------
-        >>> client.oms_login("user1", "pass123", "A7B9")
+        >>> client.oms_login(
+            username = "user123",
+            password = "pass123",
+            captcha_value = "abcd"
+        )
         """
         
         response = self.__AuthSyncClient.httpx_Client.post(
@@ -542,7 +552,9 @@ class EmsEngine_TseIfb_SyncClient:
         >>> order = client.Buy_by_Name(
         ...     symbolName="اهرم",
         ...     Price=12000,
-        ...     Volume=1000
+        ...     Volume=1000,
+        ...     Order_ValidityType = 'DAY',
+        ...     ValidityDate = 0
         ... )
         >>> order.send()
         """
@@ -615,7 +627,9 @@ class EmsEngine_TseIfb_SyncClient:
         >>> order = client.Sell_by_Name(
         ...     symbolName="اهرم",
         ...     Price=12000,
-        ...     Volume=1000
+        ...     Volume=1000,
+        ...     Order_ValidityType = 'DAY',
+        ...     ValidityDate = 0
         ... )
         >>> order.send()
         """
@@ -686,7 +700,9 @@ class EmsEngine_TseIfb_SyncClient:
         >>> order = client.Buy_by_isin(
         ...     symbolName="اهرم",
         ...     Price=12000,
-        ...     Volume=1000
+        ...     Volume=1000,
+        ...     Order_ValidityType = 'DAY',
+        ...     ValidityDate = 0
         ... )
         >>> order.send()
         """
@@ -757,7 +773,9 @@ class EmsEngine_TseIfb_SyncClient:
         >>> order = client.Sell_by_isin(
         ...     symbolName="اهرم",
         ...     Price=12000,
-        ...     Volume=1000
+        ...     Volume=1000,
+        ...     Order_ValidityType = 'DAY',
+        ...     ValidityDate = 0
         ... )
         >>> order.send()
         """
