@@ -9,9 +9,9 @@ clean, reliable, and easy-to-use API.
 It supports both synchronous and asynchronous workflows, offering
 maximum flexibility and performance for different application scenarios.
 
-> **Note:** This SDK requires Python \>= 3.10 and is currently in Beta.
-> Some APIs may change in future releases, but it is stable enough for
-> daily use.
+> **Note:** This SDK requires Python >= 3.10 and is production-ready.
+> Development Status: **5 - Production/Stable**.
+> The public APIs are stable and safe for long-term use.
 
 ------------------------------------------------------------------------
 
@@ -367,9 +367,9 @@ See LICENSE file.
 
 ## Support
 
-GitHub Issues: https://github.com/hedgetech/hedgetech-sdk
+GitHub Issues: https://github.com/HedgeTech-ir/HedgeTech/issues
 
-Email: support@hedgetech.ir
+Email: info@hedgetech.ir
 
 ------------------------------------------------------------------------
 
