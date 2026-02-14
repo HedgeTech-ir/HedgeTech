@@ -1425,10 +1425,10 @@ class DataEngine_TseIfb_SyncClient:
             ...     print(update)  # This will not run; method is not implemented
         """
         
-        if event is None :
+        if not isinstance(event,Event):
             event = Event()
             event.set()
-        
+
         with connect(
             uri=(
                 f"wss://core.hedgetech.ir/data-engine/tse-ifb/live/data/websocket/symbol/name?"
@@ -1440,12 +1440,11 @@ class DataEngine_TseIfb_SyncClient:
                         
             while event.is_set():
                 
-                try : 
-                    yield loads(ws.recv())
-                except : 
+                try : yield loads(ws.recv(timeout=2))
+                except TimeoutError : continue
+                except Exception: 
                     ws.close()
                     break
-    
     
     # +--------------------------------------------------------------------------------------+ #
     
@@ -1520,10 +1519,10 @@ class DataEngine_TseIfb_SyncClient:
             ...     print(update)  # This will not run; method is not implemented
         """
 
-        if event is None :
+        if not isinstance(event,Event):
             event = Event()
             event.set()
-        
+            
         with connect(
             uri=(
                 f"wss://core.hedgetech.ir/data-engine/tse-ifb/live/data/websocket/symbol/isin?"
@@ -1535,8 +1534,8 @@ class DataEngine_TseIfb_SyncClient:
             
             while event.is_set():
                 
-                try : 
-                    yield loads(ws.recv())
-                except : 
+                try : yield loads(ws.recv(timeout=2))
+                except TimeoutError : continue
+                except Exception: 
                     ws.close()
                     break
