@@ -2,7 +2,12 @@
 #                                      Imports                                      #
 # ========================================|======================================== #
 
-from asyncio import Event
+from asyncio import (
+    Event,
+    wait_for,
+    TimeoutError,
+    sleep,
+)
 from websockets.asyncio.client import connect
 from json import loads
 from HedgeTech.Auth import AuthAsyncClient
@@ -1461,7 +1466,7 @@ class DataEngine_TseIfb_AsyncClient:
             ...     print(update["data"])
         """
         
-        if event is None :
+        if not isinstance(event,Event):
             event = Event()
             event.set()
         
@@ -1473,12 +1478,16 @@ class DataEngine_TseIfb_AsyncClient:
             ),
             additional_headers=self.__AuthAsyncClient.token
         ) as ws:
-                        
+                            
             while event.is_set():
                 
-                try: 
-                    yield loads(await ws.recv())
-                except : 
+                try : yield loads(await wait_for(ws.recv(), timeout=2))
+                
+                except TimeoutError: 
+                    await sleep(0)
+                    continue
+                
+                except Exception: 
                     await ws.close()
                     break
                 
@@ -1566,10 +1575,10 @@ class DataEngine_TseIfb_AsyncClient:
             ...     print(update["data"])
         """
 
-        if event is None :
+        if not isinstance(event,Event):
             event = Event()
             event.set()
-        
+            
         async with connect(
             uri=(
                 f"wss://core.hedgetech.ir/data-engine/tse-ifb/live/data/websocket/symbol/isin?"
@@ -1581,8 +1590,12 @@ class DataEngine_TseIfb_AsyncClient:
             
             while event.is_set():
                 
-                try: 
-                    yield loads(await ws.recv())
-                except : 
+                try: yield loads(await wait_for(ws.recv(), timeout=2))
+                
+                except TimeoutError: 
+                    await sleep(0)
+                    continue
+                
+                except Exception: 
                     await ws.close()
                     break
