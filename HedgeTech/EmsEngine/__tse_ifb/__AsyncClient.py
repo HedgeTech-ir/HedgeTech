@@ -118,20 +118,24 @@ class Order:
         '953097ac6ced45ca8ef205b76ca6faf2'
         """
         
-        if self.OrderId is None : 
+        try : 
         
-            SendOrder_Response = await self.__AuthASyncClient.httpx_Client.post(**self.__SendOrder_RequestInfo)
+            if self.OrderId is None : 
             
-            match SendOrder_Response.status_code :
+                SendOrder_Response = await self.__AuthASyncClient.httpx_Client.post(**self.__SendOrder_RequestInfo)
                 
-                case 200 :
+                match SendOrder_Response.status_code :
                     
-                    self.OrderId = SendOrder_Response.json()['Data']['order_uuid']
-                    return None
-                    
-                case _ : return None
-                            
-        else : return None
+                    case 200 :
+                        
+                        self.OrderId = SendOrder_Response.json()['Data']['order_uuid']
+                        return None
+                        
+                    case _ : return None
+                                
+            else : return None
+            
+        except : return None
         
     # +--------------------------------------------------------------------------------------+ #
     async def Edit(
@@ -177,38 +181,42 @@ class Order:
         )
         """
         
-        if self.OrderId is not None: 
+        try : 
+            
+            if self.OrderId is not None: 
+            
+                Edit_response = await self.__AuthASyncClient.httpx_Client.patch(
+                    url='https://core.hedgetech.ir/ems-engine/tse-ifb/order/edit',
+                    data={
+                        'order_uuid' : self.OrderId,
+                        'Order_ValidityType' : Order_ValidityType,
+                        'ValidityDate' : ValidityDate,
+                        'Price' : Price,
+                        'Volume' : Volume
+                    }
+                )
+                
+                
+                match Edit_response.status_code:
+                    
+                    case 200:
+                        
+                        Edit_response = Edit_response.json()
+                        
+                        self.OrderId = Edit_response['Data']['order_uuid']
+                        self.ValidityType = Edit_response['Data']['order_validity_type']
+                        self.ValidityDate = ValidityDate
+                        self.Price = Edit_response['Data']['order_price']
+                        self.Volume = Edit_response['Data']['order_volume']
+                        
+                        return None
+                                        
+                    case _ : return None
+                    
+            else : return None
+            
+        except : return None
         
-            Edit_response = await self.__AuthASyncClient.httpx_Client.patch(
-                url='https://core.hedgetech.ir/ems-engine/tse-ifb/order/edit',
-                data={
-                    'order_uuid' : self.OrderId,
-                    'Order_ValidityType' : Order_ValidityType,
-                    'ValidityDate' : ValidityDate,
-                    'Price' : Price,
-                    'Volume' : Volume
-                }
-            )
-            
-            
-            match Edit_response.status_code:
-                
-                case 200:
-                    
-                    Edit_response = Edit_response.json()
-                    
-                    self.OrderId = Edit_response['Data']['order_uuid']
-                    self.ValidityType = Edit_response['Data']['order_validity_type']
-                    self.ValidityDate = ValidityDate
-                    self.Price = Edit_response['Data']['order_price']
-                    self.Volume = Edit_response['Data']['order_volume']
-                    
-                    return None
-                                    
-                case _ : return None
-                
-        else : return None
-            
     # +--------------------------------------------------------------------------------------+ #
 
     async def Status(self)-> OrderStatus | None:
@@ -246,24 +254,27 @@ class Order:
             'ValidityDate': 0
         }
         """
-        
-        if self.OrderId is not None:  
-        
-            status_respnse = await self.__AuthASyncClient.httpx_Client.get(
-                url='https://core.hedgetech.ir/ems-engine/tse-ifb/order/status',
-                params={'order_uuid' : self.OrderId}
-            )
+        try : 
             
-            match status_respnse.status_code :
-                
-                case 200:
-                    
-                    return status_respnse.json()['Data']
-                    
-                case _ : return None
-                
-        else : return None
+            if self.OrderId is not None:  
             
+                status_respnse = await self.__AuthASyncClient.httpx_Client.get(
+                    url='https://core.hedgetech.ir/ems-engine/tse-ifb/order/status',
+                    params={'order_uuid' : self.OrderId}
+                )
+                
+                match status_respnse.status_code :
+                    
+                    case 200:
+                        
+                        return status_respnse.json()['Data']
+                        
+                    case _ : return None
+                    
+            else : return None
+            
+        except : return None
+        
     # +--------------------------------------------------------------------------------------+ #
     
     async def Delete(self)-> None:
@@ -283,26 +294,30 @@ class Order:
         >>> print(order.is_deleted)
         True
         """
-                
-        if self.OrderId is not None:  
         
-            Delete_respnse =  await self.__AuthASyncClient.httpx_Client.delete(
-                url= 'https://core.hedgetech.ir/ems-engine/tse-ifb/order/delete',
-                params={'order_uuid' : self.OrderId}
-            )
+        try : 
             
-
-            match Delete_respnse.status_code :
+            if self.OrderId is not None:  
+            
+                Delete_respnse =  await self.__AuthASyncClient.httpx_Client.delete(
+                    url= 'https://core.hedgetech.ir/ems-engine/tse-ifb/order/delete',
+                    params={'order_uuid' : self.OrderId}
+                )
                 
-                case 200:
-                    
-                    self.is_deleted = True
-                    return None
-                            
-                case _ : return None
-    
-        else : return None
 
+                match Delete_respnse.status_code :
+                    
+                    case 200:
+                        
+                        self.is_deleted = True
+                        return None
+                                
+                    case _ : return None
+        
+            else : return None
+
+        except : return None
+        
 # ================================================================================= #
 
 class EmsEngine_TseIfb_AsyncClient:
@@ -369,6 +384,7 @@ class EmsEngine_TseIfb_AsyncClient:
         OMS : Literal[
             'Omex | Parsian',
             'Sahra | Karamad',
+            'Sahra | NIBB',
         ]
     )-> ImageFile:
         
